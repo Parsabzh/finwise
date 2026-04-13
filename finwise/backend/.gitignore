@@ -1,7 +1,2 @@
+.venv/
 venv, .env, pycache, *.pyc, __pycache__/
-backend/.env
-backend/venv/
-backend/app/__pycache__/
-backend/app/models/__pycache__/
-backend/app/routes/__pycache__/ 
-backend/.venv/
