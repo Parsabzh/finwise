@@ -1,0 +1,181 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+/* ── Recent transactions list ─────────────────────────────────────── */
+
+.listHeader {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.listTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.listCount {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.txRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+}
+
+.txRow + .txRow {
+  border-top: 1px solid var(--color-border-light);
+}
+
+.txLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.txIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.txIcon--income {
+  background: var(--color-accent-light);
+}
+
+.txIcon--expense {
+  background: var(--color-red-light);
+}
+
+.txDesc {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.txMeta {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.txAmount {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.txAmount--income {
+  color: var(--color-accent);
+}
+
+.txAmount--expense {
+  color: var(--color-text);
+}
+
+.emptyList {
+  padding: 40px;
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: 14px;
+}
+
+/* ── Goals summary ────────────────────────────────────────────────── */
+
+.goalsWrap {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.goalRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.goalTop {
+  display: flex;
+  justify-content: space-between;
+}
+
+.goalName {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.goalPct {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.goalBottom {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.goalAmount {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  color: var(--color-text-tertiary);
+  gap: 10px;
+}

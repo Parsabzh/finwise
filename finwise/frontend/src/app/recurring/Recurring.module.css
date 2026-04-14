@@ -1,0 +1,193 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 14px;
+}
+
+/* ── Rule card ────────────────────────────────────────────────────── */
+
+.ruleCard {
+  padding: 20px;
+}
+
+.ruleCard--inactive {
+  opacity: 0.55;
+}
+
+.ruleTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.ruleInfo {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.ruleIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ruleIcon--income {
+  background: var(--color-accent-light);
+}
+
+.ruleIcon--expense {
+  background: var(--color-red-light);
+}
+
+.ruleDesc {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.ruleBadges {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.ruleActions {
+  display: flex;
+  gap: 2px;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  color: var(--color-text-tertiary);
+  display: flex;
+  transition: color var(--transition-fast);
+}
+
+.actionBtn:hover {
+  color: var(--color-accent);
+}
+
+.actionBtn--delete:hover {
+  color: var(--color-red);
+}
+
+/* ── Details grid ─────────────────────────────────────────────────── */
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.detailLabel {
+  margin: 0;
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detailValue {
+  margin: 2px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.detailValue--income {
+  color: var(--color-accent);
+}
+
+.detailValueSm {
+  margin: 2px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+  text-transform: capitalize;
+}
+
+.pausedBadge {
+  margin-top: 10px;
+}
+
+/* ── Form ─────────────────────────────────────────────────────────── */
+
+.formGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formRow2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.formRow3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-accent);
+}
+
+.formActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.loading {
+  padding: 60px;
+  text-align: center;
+  color: var(--color-text-tertiary);
+}

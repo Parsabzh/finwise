@@ -1,0 +1,131 @@
+.sidebar {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: transform var(--transition-base);
+  z-index: 999;
+}
+
+.logo {
+  padding: 24px 20px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.logoIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logoText {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.3px;
+}
+
+.nav {
+  flex: 1;
+  padding: 12px 10px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  transition: all var(--transition-fast);
+  margin-bottom: 2px;
+  text-align: left;
+}
+
+.navItem:hover {
+  background: var(--color-surface-alt);
+}
+
+.navItem--active {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.navItem--active:hover {
+  background: var(--color-accent-light);
+}
+
+.footer {
+  padding: 12px 10px 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.logoutBtn:hover {
+  background: var(--color-red-light);
+  color: var(--color-red);
+}
+
+/* ── Mobile overlay ───────────────────────────────────────────────── */
+
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 998;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+  }
+
+  .sidebar--open {
+    transform: translateX(0);
+  }
+
+  .overlay {
+    display: block;
+  }
+}

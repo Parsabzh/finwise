@@ -1,0 +1,124 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* ── Logo ─────────────────────────────────────────────────────────── */
+
+.logoWrap {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.logoIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--color-accent);
+  margin-bottom: 16px;
+}
+
+.logoTitle {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.5px;
+}
+
+.logoSub {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* ── Tab switcher ─────────────────────────────────────────────────── */
+
+.tabs {
+  display: flex;
+  margin-bottom: 28px;
+  background: var(--color-surface-alt);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.tab {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all var(--transition-base);
+  background: transparent;
+  color: var(--color-text-tertiary);
+}
+
+.tab--active {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Alerts ───────────────────────────────────────────────────────── */
+
+.alert {
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alert--error {
+  background: var(--color-red-light);
+  color: var(--color-red);
+}
+
+.alert--success {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+/* ── Form ─────────────────────────────────────────────────────────── */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.passwordWrap {
+  position: relative;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 10px;
+  top: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-tertiary);
+  padding: 4px;
+  display: flex;
+}
+
+.eyeBtn:hover {
+  color: var(--color-text-secondary);
+}
