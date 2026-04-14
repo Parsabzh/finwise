@@ -18,10 +18,15 @@ export function DashboardPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [goals, setGoals] = useState<SavingGoal[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
+    setError(null);
     try {
       const [sum, txs, gls] = await Promise.all([
         getSummary(token, month),
@@ -33,6 +38,7 @@ export function DashboardPage() {
       setGoals(gls.slice(0, 4)); // show top 4 on dashboard
     } catch (err) {
       console.error("Dashboard load error:", err);
+      setError(err instanceof Error ? err.message : "Failed to load dashboard data");
     } finally {
       setLoading(false);
     }
@@ -44,6 +50,14 @@ export function DashboardPage() {
     return (
       <div className={styles.loading}>
         <Spinner /> Loading dashboard...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.loading} style={{ color: "var(--color-red)" }}>
+        {error}
       </div>
     );
   }

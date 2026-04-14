@@ -21,7 +21,10 @@ export function GoalsPage() {
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const data = await getSavingGoals(token);

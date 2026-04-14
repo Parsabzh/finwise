@@ -31,7 +31,10 @@ export function RecurringPage() {
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const data = await getRecurringTransactions(token);

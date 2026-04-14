@@ -29,6 +29,7 @@ export function TransactionsPage() {
   const { month, prev, next } = useMonthNav();
   const [txs, setTxs] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [catFilter, setCatFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -37,8 +38,12 @@ export function TransactionsPage() {
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
+    setError(null);
     try {
       const data = await getTransactions(token, {
         month,
@@ -48,6 +53,7 @@ export function TransactionsPage() {
       setTxs(data);
     } catch (err) {
       console.error(err);
+      setError(err instanceof Error ? err.message : "Failed to load transactions");
     } finally {
       setLoading(false);
     }
@@ -143,6 +149,8 @@ export function TransactionsPage() {
       <Card>
         {loading ? (
           <div className={styles.loading}><Spinner /></div>
+        ) : error ? (
+          <div className={styles.loading} style={{ color: "var(--color-red)" }}>{error}</div>
         ) : txs.length === 0 ? (
           <EmptyState
             icon={ArrowUpDown}
