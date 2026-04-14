@@ -7,9 +7,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { login as loginApi, register as registerApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import styles from "./Auth.module.css";
+import { useRouter } from "next/navigation";
 
 export function AuthPage() {
   const { login } = useAuth();
+  const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +20,7 @@ export function AuthPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = async () => {
     setError("");
@@ -26,16 +29,16 @@ export function AuthPage() {
 
     try {
       if (isLogin) {
-        const data = await loginApi(email, password);
-        login(data.access_token);
+        const data = await loginApi(email, password, rememberMe);
+        login(data.access_token, rememberMe);
       } else {
         await registerApi({ email, name, password });
         setSuccess("Account created! Logging you in...");
         // Auto-login after registration
         setTimeout(async () => {
           try {
-            const data = await loginApi(email, password);
-            login(data.access_token);
+            const data = await loginApi(email, password, rememberMe);
+            login(data.access_token, rememberMe);
           } catch {
             setError("Auto-login failed. Please login manually.");
             setIsLogin(true);
@@ -122,6 +125,27 @@ export function AuthPage() {
                 {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+
+            {isLogin && (
+              <div className={styles.row} style={{ justifyContent: "space-between", alignItems: "center" }}>
+                <label className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    style={{ marginRight: 8 }}
+                  />
+                  Remember me
+                </label>
+                <button
+                  className={styles.forgotBtn}
+                  type="button"
+                  onClick={() => router.push("/forgot-password")}
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
 
             <Button
               onClick={handleSubmit}

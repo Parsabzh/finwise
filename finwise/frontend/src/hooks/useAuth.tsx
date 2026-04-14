@@ -18,6 +18,7 @@ import {
   useContext,
   useState,
   useCallback,
+  useEffect,
   type ReactNode,
 } from "react";
 
@@ -33,12 +34,34 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
 
-  const login = useCallback((newToken: string) => {
+  // Initialize token from localStorage if present (remember-me flow)
+  useEffect(() => {
+    try {
+      const t = localStorage.getItem("finwise_token");
+      if (t) setToken(t);
+    } catch {
+      // ignore (SSR safety / private mode)
+    }
+  }, []);
+
+  const login = useCallback((newToken: string, remember = false) => {
     setToken(newToken);
+    if (remember) {
+      try {
+        localStorage.setItem("finwise_token", newToken);
+      } catch {
+        // ignore
+      }
+    }
   }, []);
 
   const logout = useCallback(() => {
     setToken(null);
+    try {
+      localStorage.removeItem("finwise_token");
+    } catch {
+      // ignore
+    }
   }, []);
 
   return (

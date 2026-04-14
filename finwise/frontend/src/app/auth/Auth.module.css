@@ -122,3 +122,24 @@
 .eyeBtn:hover {
   color: var(--color-text-secondary);
 }
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.forgotBtn {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px 6px;
+}

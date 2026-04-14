@@ -68,17 +68,41 @@ export async function register(data: UserCreate): Promise<UserResponse> {
   });
 }
 
-export async function login(email: string, password: string): Promise<TokenResponse> {
-  // Login uses form-encoded data (OAuth2 spec), not JSON
-  const res = await fetch(`${BASE_URL}/api/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-  });
+export async function login(
+  email: string,
+  password: string,
+  rememberMe: boolean = false
+): Promise<TokenResponse> {
+  // Prefer JSON login endpoint (SPA-friendly). Pass remember_me as query param.
+  const res = await fetch(
+    `${BASE_URL}/api/auth/login/json?remember_me=${rememberMe ? "true" : "false"}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    }
+  );
 
   const data = await res.json();
   if (!res.ok) throw new Error(data.detail || "Login failed");
   return data as TokenResponse;
+}
+
+export async function forgotPassword(email: string): Promise<{ message: string }> {
+  return request<{ message: string }>("/api/auth/forgot-password", {
+    method: "POST",
+    body: { email },
+  });
+}
+
+export async function resetPassword(
+  token: string,
+  new_password: string
+): Promise<{ message: string }> {
+  return request<{ message: string }>("/api/auth/reset-password", {
+    method: "POST",
+    body: { token, new_password },
+  });
 }
 
 // ── Transactions ─────────────────────────────────────────────────────
