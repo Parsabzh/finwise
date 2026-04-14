@@ -8,14 +8,17 @@ from app.schemas.transaction import TransactionCreate, TransactionResponse
 from app.models.transaction import Transaction
 from datetime import date
 
+from app.models.user import User
+from app.auth.dependencies import get_current_user
+
 router = APIRouter(prefix="/api/transactions", tags=["Transactions"])
 
-TEMP_USER_ID = "test-user-123"  # Temporary user ID for testing purposes
+
 
 @router.post("/", response_model=TransactionResponse, status_code=201)
-def create_transaction(data: TransactionCreate, db: Session = Depends(get_db)) -> Transaction:
+def create_transaction(data: TransactionCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> Transaction:
     transaction = Transaction(**data.model_dump(),
-        user_id=TEMP_USER_ID
+        user_id=current_user.id
     )
     db.add(transaction)
     db.commit()
@@ -32,9 +35,10 @@ def list_transactions(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ) -> list[Transaction]:
 
-    query = db.query(Transaction).filter(Transaction.user_id == TEMP_USER_ID)
+    query = db.query(Transaction).filter(Transaction.user_id == current_user.id)
     if month:
         year, month_num = map(int, month.split("-"))
         first_of_month = date(year, month_num, 1)
@@ -52,9 +56,9 @@ def list_transactions(
     return query.offset(skip).limit(limit).all()
 
 @router.put("/{transaction_id}", response_model=TransactionResponse)
-def update_transaction(transaction_id: str, data: TransactionCreate, db: Session = Depends(get_db)) -> Transaction:
+def update_transaction(transaction_id: str, data: TransactionCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> Transaction:
     
-    transaction= db.query(Transaction).filter(Transaction.id == transaction_id, Transaction.user_id == TEMP_USER_ID).first()
+    transaction= db.query(Transaction).filter(Transaction.id == transaction_id, Transaction.user_id == current_user.id).first()
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
     for key, value in data.model_dump().items():
@@ -64,8 +68,8 @@ def update_transaction(transaction_id: str, data: TransactionCreate, db: Session
     return transaction
 
 @router.delete("/{transaction_id}", status_code=204)
-def delete_transaction(transaction_id: str, db: Session = Depends(get_db)) -> None:
-    transaction = db.query(Transaction).filter(Transaction.id == transaction_id, Transaction.user_id == TEMP_USER_ID).first()
+def delete_transaction(transaction_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> None:
+    transaction = db.query(Transaction).filter(Transaction.id == transaction_id, Transaction.user_id == current_user.id).first()
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
     db.delete(transaction)

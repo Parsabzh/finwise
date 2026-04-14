@@ -8,14 +8,16 @@ from app.models.transaction import Transaction
 from app.models.budget import Budget
 from app.schemas.summary import SummaryResponse, CategorySummary
 
-router = APIRouter(prefix="/api/summary", tags=["Summary"])
+from app.models.user import User
+from app.auth.dependencies import get_current_user
 
-TEMP_USER_ID = "test-user-123"
+router = APIRouter(prefix="/api/summary", tags=["Summary"])
 
 @router.get("/", response_model=SummaryResponse)
 def get_summary(
     month: str = Query(..., description="Month in YYYY-MM format"),
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ) -> dict:
     # Parse month string into date range
     year, m = map(int, month.split("-"))
@@ -27,7 +29,7 @@ def get_summary(
 
     # Base filter: this user + this month
     base_filter = [
-        Transaction.user_id == TEMP_USER_ID,
+        Transaction.user_id == current_user.id,
         Transaction.date >= first_day,
         Transaction.date < next_month,
     ]
@@ -55,7 +57,7 @@ def get_summary(
 
     # Get budgets for this month
     budgets = db.query(Budget).filter(
-        Budget.user_id == TEMP_USER_ID,
+        Budget.user_id == current_user.id,
         Budget.month == first_day,
     ).all()
 

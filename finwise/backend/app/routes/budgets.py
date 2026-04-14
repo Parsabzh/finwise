@@ -9,13 +9,15 @@ from app.schemas.budget import BudgetCreate, BudgetResponse
 from app.models.budget import Budget
 from datetime import date   
 
+from app.models.user import User
+from app.auth.dependencies import get_current_user
+
 router = APIRouter(prefix="/api/budgets", tags=["Budgets"])
-TEMP_USER_ID = "test-user-123"  # Temporary user ID for testing purposes
 
 @router.post("/", response_model=BudgetResponse, status_code=201)
-def create_budget(data: BudgetCreate, db: Session = Depends(get_db)) -> Budget:
+def create_budget(data: BudgetCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> Budget:
     budget = Budget(**data.model_dump(),
-        user_id=TEMP_USER_ID
+        user_id=current_user.id
     )
     db.add(budget)
     db.commit()
@@ -29,9 +31,10 @@ def list_budgets(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ) -> list[Budget]:
 
-    query = db.query(Budget).filter(Budget.user_id == TEMP_USER_ID)
+    query = db.query(Budget).filter(Budget.user_id == current_user.id)
     if month:
         year, month_num = map(int, month.split("-"))
         first_day = date(year, month_num, 1)
@@ -43,9 +46,9 @@ def list_budgets(
     return query.offset(skip).limit(limit).all()
 
 @router.put("/{budget_id}", response_model=BudgetResponse)
-def update_budget(budget_id: str, data: BudgetCreate, db: Session = Depends(get_db)) -> Budget:
+def update_budget(budget_id: str, data: BudgetCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> Budget:
     
-    budget= db.query(Budget).filter(Budget.id == budget_id, Budget.user_id == TEMP_USER_ID).first()
+    budget= db.query(Budget).filter(Budget.id == budget_id, Budget.user_id == current_user.id).first()
     if not budget:
         raise HTTPException(status_code=404, detail="Budget not found")
     for key, value in data.model_dump().items():
@@ -55,8 +58,8 @@ def update_budget(budget_id: str, data: BudgetCreate, db: Session = Depends(get_
     return budget
 
 @router.delete("/{budget_id}", status_code=204)
-def delete_budget(budget_id: str, db: Session = Depends(get_db)) -> None:
-    budget = db.query(Budget).filter(Budget.id == budget_id, Budget.user_id == TEMP_USER_ID).first()
+def delete_budget(budget_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> None:
+    budget = db.query(Budget).filter(Budget.id == budget_id, Budget.user_id == current_user.id).first()
     if not budget:
         raise HTTPException(status_code=404, detail="Budget not found")
     db.delete(budget)

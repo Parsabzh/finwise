@@ -3,3 +3,6 @@ venv/
 .env
 *.pyc
 __pycache__/
+seed_budgets_goals.py
+seed_recurring.py
+seed_transactions.py

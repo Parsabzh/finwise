@@ -9,13 +9,16 @@ from app.schemas.saving_goals import SavingGoalCreate, SavingGoalResponse
 from app.models.saving_goals import SavingGoals
 from datetime import date 
 
+from app.models.user import User
+from app.auth.dependencies import get_current_user 
+
 router = APIRouter(prefix="/api/saving-goals", tags=["Saving Goals"])
 TEMP_USER_ID = "test-user-123"  # Temporary user ID for testing purposes
 
 @router.post("/", response_model=SavingGoalResponse, status_code=201)
-def create_saving_goal(data: SavingGoalCreate, db: Session = Depends(get_db)) -> SavingGoals:
+def create_saving_goal(data: SavingGoalCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> SavingGoals:
     saving_goal = SavingGoals(**data.model_dump(),
-        user_id=TEMP_USER_ID
+        user_id=current_user.id
     )
     db.add(saving_goal)
     db.commit()
@@ -28,9 +31,10 @@ def list_savings_goals(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)  
 ) -> list[SavingGoals]:
 
-    query = db.query(SavingGoals).filter(SavingGoals.user_id == TEMP_USER_ID)
+    query = db.query(SavingGoals).filter(SavingGoals.user_id == current_user.id)
     if status:
         today = date.today()
         if status == "active":
@@ -46,9 +50,9 @@ def list_savings_goals(
     return query.offset(skip).limit(limit).all()
 
 @router.put("/{goal_id}", response_model=SavingGoalResponse)
-def update_saving_goal(goal_id: str, data: SavingGoalCreate, db: Session = Depends(get_db)) -> SavingGoals:
+def update_saving_goal(goal_id: str, data: SavingGoalCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> SavingGoals:
     
-    saving_goal= db.query(SavingGoals).filter(SavingGoals.id == goal_id, SavingGoals.user_id == TEMP_USER_ID).first()
+    saving_goal= db.query(SavingGoals).filter(SavingGoals.id == goal_id, SavingGoals.user_id == current_user.id).first()
     if not saving_goal:
         raise HTTPException(status_code=404, detail="Saving Goal not found")
     for key, value in data.model_dump().items():
@@ -58,8 +62,8 @@ def update_saving_goal(goal_id: str, data: SavingGoalCreate, db: Session = Depen
     return saving_goal
 
 @router.delete("/{goal_id}", status_code=204)
-def delete_saving_goal(goal_id: str, db: Session = Depends(get_db)) -> None:
-    saving_goal = db.query(SavingGoals).filter(SavingGoals.id == goal_id, SavingGoals.user_id == TEMP_USER_ID).first()
+def delete_saving_goal(goal_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> None:
+    saving_goal = db.query(SavingGoals).filter(SavingGoals.id == goal_id, SavingGoals.user_id == current_user.id).first()
     if not saving_goal:
         raise HTTPException(status_code=404, detail="Saving Goal not found")
     db.delete(saving_goal)
