@@ -24,8 +24,8 @@ export async function login(email: string, password: string): Promise<TokenRespo
   return data as TokenResponse;
 }
 
-export async function forgotPassword(email: string): Promise<void> {
-  await request<void>("/api/auth/forgot-password", {
+export async function forgotPassword(email: string): Promise<{ message: string }> {
+  return await request<{ message: string }>("/api/auth/forgot-password", {
     method: "POST",
     body: JSON.stringify({ email }),
   });
