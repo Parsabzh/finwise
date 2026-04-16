@@ -24,6 +24,20 @@ export async function login(email: string, password: string): Promise<TokenRespo
   return data as TokenResponse;
 }
 
+export async function forgotPassword(email: string): Promise<void> {
+  await request<void>("/api/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function resetPassword(token: string, new_password: string): Promise<void> {
+  await request<void>("/api/auth/reset-password", {
+    method: "POST",
+    body: JSON.stringify({ token, new_password }),
+  });
+}
+
 interface TxFilters { month?: string; category?: string; type?: string; skip?: number; limit?: number; }
 export async function getTransactions(token: string, filters: TxFilters = {}): Promise<Transaction[]> {
   const p = new URLSearchParams();
