@@ -1,5 +1,4 @@
 
-version: "3.8"
 
 services:
 
@@ -21,7 +20,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     
     ports:
-      - "5432:5432"
+      - "5433:5432"
     
 
     healthcheck:
@@ -57,6 +56,27 @@ services:
 
     volumes:
       - ./backend:/app
+
+  # ── Next.js frontend ─────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    
+    restart: unless-stopped
+    
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    
+    ports:
+      - "3000:3000"
+    
+    depends_on:
+      - backend
+    
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules   
 
 # Named volumes must be declared at the top level.
 volumes:
