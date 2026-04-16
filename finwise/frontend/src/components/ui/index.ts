@@ -1,10 +1,3 @@
-/* ═══════════════════════════════════════════════════════════════════
-   UI Component barrel export.
-
-   Every component imports from "@/components/ui" instead of
-   individual files. One import line instead of ten.
-   ═══════════════════════════════════════════════════════════════════ */
-
 export { Button } from "./Button";
 export { Card } from "./Card";
 export { Input } from "./Input";

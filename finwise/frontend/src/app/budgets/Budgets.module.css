@@ -1,162 +1,24 @@
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.subtitle {
-  margin: 4px 0 0;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-}
-
-.headerRight {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-/* ── Overview card ────────────────────────────────────────────────── */
-
-.overview {
-  padding: 24px;
-  margin-bottom: 24px;
-}
-
-.overviewTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.overviewLabel {
-  margin: 0;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-.overviewValue {
-  margin: 4px 0 0;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.overviewValue--over {
-  color: var(--color-red);
-}
-
-.overviewValue--under {
-  color: var(--color-accent);
-}
-
-.overviewMeta {
-  margin: 8px 0 0;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-/* ── Budget cards grid ────────────────────────────────────────────── */
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 14px;
-}
-
-.budgetCard {
-  padding: 20px;
-}
-
-.budgetTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 14px;
-}
-
-.budgetCategory {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text);
-  text-transform: capitalize;
-}
-
-.budgetAmounts {
-  margin: 2px 0 0;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-.budgetActions {
-  display: flex;
-  gap: 2px;
-}
-
-.budgetBottom {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-}
-
-.budgetPct {
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.budgetRemaining {
-  font-size: 12px;
-  color: var(--color-text-tertiary);
-}
-
-.actionBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  color: var(--color-text-tertiary);
-  display: flex;
-  transition: color var(--transition-fast);
-}
-
-.actionBtn:hover {
-  color: var(--color-accent);
-}
-
-.actionBtn--delete:hover {
-  color: var(--color-red);
-}
-
-/* ── Modal form ───────────────────────────────────────────────────── */
-
-.formGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.formActions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 8px;
-}
-
-.loading {
-  padding: 60px;
-  text-align: center;
-  color: var(--color-text-tertiary);
-}
+.header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+.title { margin:0; font-size:22px; font-weight:700; color:var(--color-text); letter-spacing:-0.3px; }
+.subtitle { margin:4px 0 0; font-size:13px; color:var(--color-text-tertiary); }
+.headerRight { display:flex; gap:10px; align-items:center; }
+.overview { padding:22px; margin-bottom:20px; }
+.overviewTop { display:flex; justify-content:space-between; margin-bottom:12px; }
+.overviewLabel { margin:0; font-size:11px; color:var(--color-text-tertiary); text-transform:uppercase; letter-spacing:0.5px; font-weight:600; }
+.overviewValue { margin:6px 0 0; font-size:24px; font-weight:700; color:var(--color-text); }
+.overviewMeta { margin:8px 0 0; font-size:12px; color:var(--color-text-tertiary); }
+.grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px; }
+.budgetCard { padding:18px; }
+.budgetTop { display:flex; justify-content:space-between; margin-bottom:12px; }
+.budgetCat { margin:0; font-size:14px; font-weight:600; color:var(--color-text); text-transform:capitalize; }
+.budgetAmt { margin:2px 0 0; font-size:12px; color:var(--color-text-tertiary); }
+.budgetActions { display:flex; gap:2px; align-items:flex-start; }
+.budgetBottom { display:flex; justify-content:space-between; margin-top:6px; }
+.budgetPct { font-size:11px; font-weight:600; }
+.budgetLeft { font-size:11px; color:var(--color-text-tertiary); }
+.actionBtn { background:none; border:none; cursor:pointer; padding:5px; border-radius:6px; color:var(--color-text-tertiary); display:flex; transition:all var(--transition-fast); }
+.actionBtn:hover { color:var(--color-indigo); background:var(--color-indigo-light); }
+.actionBtn--del:hover { color:var(--color-coral); background:var(--color-coral-light); }
+.formGrid { display:flex; flex-direction:column; gap:16px; }
+.formActions { display:flex; gap:10px; justify-content:flex-end; margin-top:8px; }
+.loading { padding:60px; text-align:center; color:var(--color-text-tertiary); }

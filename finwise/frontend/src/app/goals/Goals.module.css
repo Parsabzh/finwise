@@ -1,178 +1,25 @@
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.subtitle {
-  margin: 4px 0 0;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
-}
-
-/* ── Goal card ────────────────────────────────────────────────────── */
-
-.goalCard {
-  padding: 24px;
-  position: relative;
-  overflow: hidden;
-}
-
-.doneBanner {
-  position: absolute;
-  top: 12px;
-  right: -28px;
-  background: var(--color-accent);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 32px;
-  transform: rotate(45deg);
-  letter-spacing: 0.5px;
-}
-
-.goalTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
-}
-
-.goalInfo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.goalIcon {
-  width: 42px;
-  height: 42px;
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.goalIcon--active {
-  background: var(--color-surface-alt);
-}
-
-.goalIcon--done {
-  background: var(--color-accent-light);
-}
-
-.goalName {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.goalDeadline {
-  margin: 2px 0 0;
-  font-size: 12px;
-}
-
-.goalDeadline--ok {
-  color: var(--color-text-tertiary);
-}
-
-.goalDeadline--soon {
-  color: var(--color-amber);
-}
-
-.goalDeadline--overdue {
-  color: var(--color-red);
-}
-
-.goalActions {
-  display: flex;
-  gap: 2px;
-}
-
-.actionBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  color: var(--color-text-tertiary);
-  display: flex;
-  transition: color var(--transition-fast);
-}
-
-.actionBtn:hover {
-  color: var(--color-accent);
-}
-
-.actionBtn--delete:hover {
-  color: var(--color-red);
-}
-
-/* ── Progress section ─────────────────────────────────────────────── */
-
-.progressSection {
-  margin-bottom: 8px;
-}
-
-.progressTop {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.currentAmount {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.targetAmount {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  align-self: flex-end;
-}
-
-.progressMeta {
-  margin: 8px 0 0;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  text-align: right;
-}
-
-/* ── Form ─────────────────────────────────────────────────────────── */
-
-.formGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.formActions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 8px;
-}
-
-.loading {
-  padding: 60px;
-  text-align: center;
-  color: var(--color-text-tertiary);
-}
+.header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+.title { margin:0; font-size:22px; font-weight:700; color:var(--color-text); letter-spacing:-0.3px; }
+.subtitle { margin:4px 0 0; font-size:13px; color:var(--color-text-tertiary); }
+.grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:14px; }
+.goalCard { padding:22px; position:relative; overflow:hidden; }
+.doneBanner { position:absolute; top:12px; right:-28px; background:linear-gradient(90deg, var(--color-teal), var(--color-teal-dark)); color:#fff; font-size:10px; font-weight:700; padding:3px 34px; transform:rotate(45deg); letter-spacing:0.5px; }
+.goalTop { display:flex; justify-content:space-between; margin-bottom:16px; }
+.goalInfo { display:flex; align-items:center; gap:12px; }
+.goalIcon { width:42px; height:42px; border-radius:11px; background:var(--color-indigo-light); display:flex; align-items:center; justify-content:center; }
+.goalName { margin:0; font-size:15px; font-weight:600; color:var(--color-text); }
+.goalDeadline { margin:2px 0 0; font-size:11px; }
+.goalDeadline--ok { color:var(--color-text-tertiary); }
+.goalDeadline--soon { color:var(--color-amber); }
+.goalDeadline--over { color:var(--color-coral); }
+.goalActions { display:flex; gap:2px; }
+.actionBtn { background:none; border:none; cursor:pointer; padding:5px; border-radius:6px; color:var(--color-text-tertiary); display:flex; transition:all var(--transition-fast); }
+.actionBtn:hover { color:var(--color-indigo); background:var(--color-indigo-light); }
+.actionBtn--del:hover { color:var(--color-coral); background:var(--color-coral-light); }
+.progressTop { display:flex; justify-content:space-between; margin-bottom:8px; align-items:baseline; }
+.currentAmt { font-size:20px; font-weight:700; color:var(--color-text); font-variant-numeric:tabular-nums; }
+.targetAmt { font-size:13px; color:var(--color-text-tertiary); }
+.progressMeta { margin:8px 0 0; font-size:12px; color:var(--color-text-tertiary); text-align:right; }
+.formGrid { display:flex; flex-direction:column; gap:16px; }
+.formActions { display:flex; gap:10px; justify-content:flex-end; margin-top:8px; }
+.loading { padding:60px; text-align:center; color:var(--color-text-tertiary); }

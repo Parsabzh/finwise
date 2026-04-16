@@ -1,25 +1,14 @@
 "use client";
-
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formatMonth } from "@/lib/utils";
-import styles from "./MonthNavigator.module.css";
+import s from "./MonthNavigator.module.css";
 
-interface MonthNavigatorProps {
-  month: string;
-  onPrev: () => void;
-  onNext: () => void;
-}
-
-export function MonthNavigator({ month, onPrev, onNext }: MonthNavigatorProps) {
+export function MonthNavigator({ month, onPrev, onNext }: { month: string; onPrev: () => void; onNext: () => void }) {
   return (
-    <div className={styles.nav}>
-      <button className={styles.navBtn} onClick={onPrev}>
-        <ChevronLeft size={18} />
-      </button>
-      <span className={styles.navLabel}>{formatMonth(month)}</span>
-      <button className={styles.navBtn} onClick={onNext}>
-        <ChevronRight size={18} />
-      </button>
+    <div className={s.nav}>
+      <button className={s.btn} onClick={onPrev}><ChevronLeft size={16} /></button>
+      <span className={s.label}>{formatMonth(month)}</span>
+      <button className={s.btn} onClick={onNext}><ChevronRight size={16} /></button>
     </div>
   );
 }

@@ -7,16 +7,10 @@ export const metadata: Metadata = {
   description: "AI-powered personal finance tracking application",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
-        <AuthProvider>{children}</AuthProvider>
-      </body>
+    <html lang="en">
+      <body><AuthProvider>{children}</AuthProvider></body>
     </html>
   );
 }

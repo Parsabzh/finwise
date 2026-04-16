@@ -1,42 +1,7 @@
-/* Input field styles */
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-}
-
-.input {
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  font-size: 14px;
-  color: var(--color-text);
-  background: var(--color-surface);
-  outline: none;
-  transition: border-color var(--transition-fast);
-  width: 100%;
-}
-
-.input:focus {
-  border-color: var(--color-accent);
-}
-
-.input--error {
-  border-color: var(--color-red);
-}
-
-.input--error:focus {
-  border-color: var(--color-red);
-}
-
-.error {
-  font-size: 12px;
-  color: var(--color-red);
-}
+.field { display:flex; flex-direction:column; gap:4px; }
+.label { font-size:12px; font-weight:600; color:var(--color-text-secondary); }
+.input { padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--color-border); font-size:13px; color:var(--color-text); background:var(--color-surface); outline:none; transition:border-color var(--transition-fast); width:100%; }
+.input:focus { border-color:var(--color-teal); }
+.input--error { border-color:var(--color-coral); }
+.input--error:focus { border-color:var(--color-coral); }
+.error { font-size:12px; color:var(--color-coral); }

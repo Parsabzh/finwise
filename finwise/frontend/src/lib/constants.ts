@@ -1,46 +1,18 @@
-/* ═══════════════════════════════════════════════════════════════════
-   Application-wide constants.
-   Single source of truth for categories, chart colors, and config.
-   ═══════════════════════════════════════════════════════════════════ */
-
 export const CATEGORIES = [
-  "salary",
-  "freelance",
-  "rent",
-  "utilities",
-  "groceries",
-  "transport",
-  "dining",
-  "subscriptions",
-  "health",
-  "shopping",
-  "entertainment",
-  "education",
-  "other",
+  "salary","freelance","rent","utilities","groceries","transport",
+  "dining","subscriptions","health","shopping","entertainment","education","other",
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];
 
-/** One color per category — used in pie/bar charts and badges */
 export const CATEGORY_COLORS: Record<string, string> = {
-  salary: "#059669",
-  freelance: "#2563EB",
-  rent: "#DC2626",
-  utilities: "#D97706",
-  groceries: "#7C3AED",
-  transport: "#0891B2",
-  dining: "#DB2777",
-  subscriptions: "#65A30D",
-  health: "#EA580C",
-  shopping: "#4F46E5",
-  entertainment: "#0D9488",
-  education: "#CA8A04",
-  other: "#6B7280",
+  salary:"#0D9488", freelance:"#4F46E5", rent:"#EF4444", utilities:"#F59E0B",
+  groceries:"#8B5CF6", transport:"#0EA5E9", dining:"#EC4899", subscriptions:"#10B981",
+  health:"#F97316", shopping:"#6366F1", entertainment:"#14B8A6", education:"#A855F7", other:"#64748B",
 };
 
-/** Fallback ordered palette for charts when category isn't matched */
 export const CHART_COLORS = [
-  "#059669", "#2563EB", "#DC2626", "#D97706", "#7C3AED",
-  "#0891B2", "#DB2777", "#65A30D", "#EA580C", "#4F46E5",
-  "#0D9488", "#CA8A04", "#6B7280",
+  "#0D9488","#4F46E5","#EF4444","#F59E0B","#8B5CF6",
+  "#0EA5E9","#EC4899","#10B981","#F97316","#6366F1",
+  "#14B8A6","#A855F7","#64748B",
 ];

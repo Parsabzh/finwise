@@ -1,21 +1,10 @@
 "use client";
-
 import { type ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import styles from "./Badge.module.css";
+import s from "./Badge.module.css";
 
-type BadgeColor = "green" | "red" | "amber" | "blue" | "purple" | "gray";
+export type BadgeVariant = "default" | "teal" | "indigo" | "coral" | "amber" | "violet" | "sky";
 
-interface BadgeProps {
-  children: ReactNode;
-  color?: BadgeColor;
-  className?: string;
-}
-
-export function Badge({ children, color = "gray", className }: BadgeProps) {
-  return (
-    <span className={cn(styles.badge, styles[`badge--${color}`], className)}>
-      {children}
-    </span>
-  );
+export function Badge({ children, variant = "default", className }: { children: ReactNode; variant?: BadgeVariant; className?: string }) {
+  return <span className={cn(s.badge, s[`badge--${variant}`], className)}>{children}</span>;
 }

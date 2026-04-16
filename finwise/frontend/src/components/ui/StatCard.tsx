@@ -1,35 +1,20 @@
 "use client";
-
 import { type ElementType } from "react";
 import { Card } from "./Card";
-import styles from "./StatCard.module.css";
+import s from "./StatCard.module.css";
 
-interface StatCardProps {
-  label: string;
-  value: string;
-  icon: ElementType;
-  color?: "accent" | "red" | "blue" | "amber";
-}
+interface StatCardProps { label: string; value: string; icon: ElementType; iconBg?: string; iconColor?: string; accent?: string; }
 
-const COLOR_MAP = {
-  accent: { bg: "var(--color-accent-light)", fg: "var(--color-accent)" },
-  red: { bg: "var(--color-red-light)", fg: "var(--color-red)" },
-  blue: { bg: "var(--color-blue-light)", fg: "var(--color-blue)" },
-  amber: { bg: "var(--color-amber-light)", fg: "var(--color-amber)" },
-};
-
-export function StatCard({ label, value, icon: Icon, color = "accent" }: StatCardProps) {
-  const c = COLOR_MAP[color];
-
+export function StatCard({ label, value, icon: Icon, iconBg = "var(--color-surface-alt)", iconColor = "var(--color-text-secondary)", accent }: StatCardProps) {
   return (
-    <Card className={styles.statCard}>
-      <div className={styles.statCard__inner}>
+    <Card className={s.card} style={accent ? { borderLeft: `3px solid ${accent}` } : undefined}>
+      <div className={s.inner}>
         <div>
-          <p className={styles.statCard__label}>{label}</p>
-          <p className={styles.statCard__value}>{value}</p>
+          <p className={s.label}>{label}</p>
+          <p className={s.value}>{value}</p>
         </div>
-        <div className={styles.statCard__icon} style={{ background: c.bg }}>
-          <Icon size={20} color={c.fg} />
+        <div className={s.icon} style={{ background: iconBg }}>
+          <Icon size={19} color={iconColor} />
         </div>
       </div>
     </Card>

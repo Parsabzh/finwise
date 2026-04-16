@@ -1,22 +1,13 @@
 "use client";
-
 import { Menu, User } from "lucide-react";
-import styles from "./TopBar.module.css";
+import s from "./TopBar.module.css";
 
-interface TopBarProps {
-  onMenuToggle: () => void;
-}
-
-export function TopBar({ onMenuToggle }: TopBarProps) {
+export function TopBar({ onMenuToggle }: { onMenuToggle: () => void }) {
   return (
-    <header className={styles.topbar}>
-      <button className={styles.menuBtn} onClick={onMenuToggle}>
-        <Menu size={22} />
-      </button>
+    <header className={s.topbar}>
+      <button className={s.menuBtn} onClick={onMenuToggle}><Menu size={22} /></button>
       <div />
-      <div className={styles.avatar}>
-        <User size={16} color="var(--color-accent)" />
-      </div>
+      <div className={s.avatar}><User size={15} color="var(--color-teal)" /></div>
     </header>
   );
 }

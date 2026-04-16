@@ -1,70 +1,39 @@
 "use client";
-
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { Card } from "@/components/ui";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, capitalize } from "@/lib/utils";
 import { CATEGORY_COLORS, CHART_COLORS } from "@/lib/constants";
 import type { CategorySummary } from "@/types";
-import styles from "./SpendingPieChart.module.css";
+import s from "./SpendingPieChart.module.css";
 
-interface SpendingPieChartProps {
-  data: CategorySummary[];
-}
-
-export function SpendingPieChart({ data }: SpendingPieChartProps) {
+export function SpendingPieChart({ data }: { data: CategorySummary[] }) {
   const chartData = data.map((c, i) => ({
-    name: c.category,
-    value: Number(c.total),
+    name: capitalize(c.category), value: Number(c.total),
     fill: CATEGORY_COLORS[c.category] || CHART_COLORS[i % CHART_COLORS.length],
   }));
 
   return (
-    <Card className={styles.wrapper}>
-      <h3 className={styles.title}>Spending by Category</h3>
-
+    <Card className={s.wrapper}>
+      <h3 className={s.title}>Spending Breakdown</h3>
       {chartData.length > 0 ? (
         <>
-          <ResponsiveContainer width="100%" height={240}>
+          <ResponsiveContainer width="100%" height={220}>
             <PieChart>
-              <Pie
-                data={chartData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={90}
-                innerRadius={55}
-                strokeWidth={2}
-                stroke="var(--color-surface)"
-              >
-                {chartData.map((entry, i) => (
-                  <Cell key={i} fill={entry.fill} />
-                ))}
+              <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={85} innerRadius={52} strokeWidth={2} stroke="var(--color-surface)">
+                {chartData.map((e, i) => <Cell key={i} fill={e.fill} />)}
               </Pie>
-              <Tooltip
-                formatter={(v: number) => formatCurrency(v)}
-                contentStyle={{
-                  borderRadius: 8,
-                  border: "1px solid var(--color-border)",
-                  boxShadow: "var(--shadow-sm)",
-                  fontSize: 13,
-                }}
-              />
+              <Tooltip formatter={(v: number) => formatCurrency(v)} contentStyle={{ borderRadius: 8, border: "1px solid var(--color-border)", boxShadow: "var(--shadow-sm)", fontSize: 12 }} />
             </PieChart>
           </ResponsiveContainer>
-
-          <div className={styles.legend}>
+          <div className={s.legend}>
             {chartData.map((item, i) => (
-              <div key={i} className={styles.legendItem}>
-                <div className={styles.legendDot} style={{ background: item.fill }} />
-                {item.name}
+              <div key={i} className={s.legendItem}>
+                <div className={s.legendDot} style={{ background: item.fill }} />{item.name}
               </div>
             ))}
           </div>
         </>
-      ) : (
-        <div className={styles.empty}>No spending data</div>
-      )}
+      ) : <div className={s.empty}>No spending data</div>}
     </Card>
   );
 }

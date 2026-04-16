@@ -1,22 +1,4 @@
-.shell {
-  display: flex;
-  min-height: 100vh;
-  background: var(--color-bg);
-}
-
-.main {
-  flex: 1;
-  min-width: 0; /* prevents flex child from overflowing */
-}
-
-.content {
-  padding: 28px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-@media (max-width: 768px) {
-  .content {
-    padding: 20px 16px;
-  }
-}
+.shell { display:flex; min-height:100vh; background:var(--color-bg); }
+.main { flex:1; min-width:0; }
+.content { padding:24px; max-width:1100px; margin:0 auto; }
+@media (max-width:768px) { .content { padding:20px 16px; } }

@@ -1,40 +1,6 @@
-.wrapper {
-  padding: 24px;
-}
-
-.title {
-  margin: 0 0 20px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.empty {
-  height: 240px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-tertiary);
-  font-size: 14px;
-}
-
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 8px;
-}
-
-.legendItem {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--color-text-secondary);
-}
-
-.legendDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-}
+.wrapper { padding:22px; }
+.title { margin:0 0 18px; font-size:14px; font-weight:600; color:var(--color-text); }
+.empty { height:220px; display:flex; align-items:center; justify-content:center; color:var(--color-text-tertiary); font-size:14px; }
+.legend { display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:10px; }
+.legendItem { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--color-text-secondary); }
+.legendDot { width:8px; height:8px; border-radius:2px; }

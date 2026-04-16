@@ -1,70 +1,9 @@
-/* Button component styles */
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font-weight: 600;
-  transition: opacity var(--transition-fast), background var(--transition-fast);
-  white-space: nowrap;
-  border: none;
-  line-height: 1;
-}
-
-.btn:hover:not(:disabled) {
-  opacity: 0.85;
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* ── Sizes ────────────────────────────────────────────────────────── */
-
-.btn--sm {
-  padding: 6px 12px;
-  font-size: 13px;
-}
-
-.btn--md {
-  padding: 8px 18px;
-  font-size: 14px;
-}
-
-.btn--lg {
-  padding: 12px 24px;
-  font-size: 15px;
-}
-
-/* ── Variants ─────────────────────────────────────────────────────── */
-
-.btn--primary {
-  background: var(--color-accent);
-  color: #fff;
-}
-
-.btn--secondary {
-  background: var(--color-surface-alt);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-  font-weight: 500;
-}
-
-.btn--danger {
-  background: var(--color-red);
-  color: #fff;
-}
-
-.btn--ghost {
-  background: transparent;
-  color: var(--color-text-secondary);
-  font-weight: 500;
-}
-
-.btn--ghost:hover:not(:disabled) {
-  background: var(--color-surface-alt);
-  opacity: 1;
-}
+.btn { display:inline-flex; align-items:center; gap:6px; border-radius:var(--radius-md); cursor:pointer; font-weight:600; transition:all var(--transition-fast); white-space:nowrap; border:none; padding:8px 18px; font-size:13px; line-height:1; }
+.btn:hover:not(:disabled) { opacity:0.88; }
+.btn:disabled { opacity:0.5; cursor:not-allowed; }
+.btn--teal { background:var(--color-teal); color:#fff; }
+.btn--indigo { background:var(--color-indigo); color:#fff; }
+.btn--secondary { background:var(--color-surface-alt); color:var(--color-text); border:1px solid var(--color-border); font-weight:500; }
+.btn--danger { background:var(--color-coral); color:#fff; }
+.btn--ghost { background:transparent; color:var(--color-text-secondary); font-weight:500; padding:6px 10px; }
+.btn--ghost:hover:not(:disabled) { background:var(--color-surface-alt); opacity:1; }

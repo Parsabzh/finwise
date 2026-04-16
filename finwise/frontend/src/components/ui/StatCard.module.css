@@ -1,34 +1,5 @@
-.statCard {
-  padding: 20px;
-}
-
-.statCard__inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.statCard__label {
-  margin: 0;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  font-weight: 500;
-}
-
-.statCard__value {
-  margin: 8px 0 0;
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--color-text);
-  letter-spacing: -0.5px;
-}
-
-.statCard__icon {
-  width: 42px;
-  height: 42px;
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
+.card { padding:18px 20px; }
+.inner { display:flex; justify-content:space-between; align-items:flex-start; }
+.label { margin:0; font-size:11px; color:var(--color-text-tertiary); font-weight:600; text-transform:uppercase; letter-spacing:0.6px; }
+.value { margin:10px 0 0; font-size:24px; font-weight:700; color:var(--color-text); letter-spacing:-0.5px; font-variant-numeric:tabular-nums; }
+.icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
