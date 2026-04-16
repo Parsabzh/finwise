@@ -30,8 +30,8 @@ export default function ResetPasswordPage() {
 
     setLoading(true);
     try {
-      const res = await resetPassword(token, newPassword);
-      setMessage(res.message || "Password reset successfully");
+      await resetPassword(token, newPassword);
+      setMessage("Password reset successfully");
       setTimeout(() => router.push("/"), 1400);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");
