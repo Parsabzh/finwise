@@ -55,3 +55,19 @@ def delete_recurring(rule_id: str, db: Session = Depends(get_db), current_user: 
 def trigger_recurring(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> dict:
     count = process_recurring_transactions(db)
     return {"message": f"Created {count} transactions"}
+
+@router.post("/process")
+def process_recurring_cron(
+    request: Request,
+    db: Session = Depends(get_db)
+) -> dict:
+    # Security — verify the request is from Vercel cron, not a random caller
+    # Vercel sends our secret in the Authorization header
+    auth_header = request.headers.get("authorization", "")
+    cron_secret = os.getenv("CRON_SECRET", "")
+
+    if not cron_secret or auth_header != f"Bearer {cron_secret}":
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    count = process_recurring_transactions(db)
+    return {"processed": count}
