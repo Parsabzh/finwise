@@ -20,6 +20,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",    # Next.js dev server
         "http://127.0.0.1:3000",
+        "https://finwise-frontend-delta.vercel.app" #prod
     ],
     allow_credentials=True,
     allow_methods=["*"],
