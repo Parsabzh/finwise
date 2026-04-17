@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from app.database import get_db
-from app.models.recurring_transaction import RecurringTransaction
-from app.schemas.recurring_transaction import RecurringTransactionCreate, RecurringTransactionResponse
-from app.services.recurring_service import process_recurring_transactions
-from app.models.user import User
-from app.auth.dependencies import get_current_user
+from backend.app.database import get_db
+from backend.app.models.recurring_transaction import RecurringTransaction
+from backend.app.schemas.recurring_transaction import RecurringTransactionCreate, RecurringTransactionResponse
+from backend.app.services.recurring_service import process_recurring_transactions
+from backend.app.models.user import User
+from backend.app.auth.dependencies import get_current_user
 
 router = APIRouter(prefix="/api/recurring", tags=["Recurring Transactions"])
 

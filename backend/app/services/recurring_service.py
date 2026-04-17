@@ -1,7 +1,7 @@
 from datetime import date
 from sqlalchemy.orm import Session
-from app.models.recurring_transaction import RecurringTransaction
-from app.models.transaction import Transaction
+from backend.app.models.recurring_transaction import RecurringTransaction
+from backend.app.models.transaction import Transaction
 import uuid
 
 def process_recurring_transactions(db: Session) -> int:

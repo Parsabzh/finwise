@@ -3,14 +3,14 @@ from typing import Optional
 from sqlalchemy import extract
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.schemas.budget import BudgetCreate, BudgetResponse
+from backend.app.database import get_db
+from backend.app.schemas.budget import BudgetCreate, BudgetResponse
 
-from app.models.budget import Budget
+from backend.app.models.budget import Budget
 from datetime import date   
 
-from app.models.user import User
-from app.auth.dependencies import get_current_user
+from backend.app.models.user import User
+from backend.app.auth.dependencies import get_current_user
 
 router = APIRouter(prefix="/api/budgets", tags=["Budgets"])
 

@@ -3,14 +3,14 @@ from typing import Optional
 from sqlalchemy import extract, or_
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.schemas.saving_goals import SavingGoalCreate, SavingGoalResponse
+from backend.app.database import get_db
+from backend.app.schemas.saving_goals import SavingGoalCreate, SavingGoalResponse
 
-from app.models.saving_goals import SavingGoals
+from backend.app.models.saving_goals import SavingGoals
 from datetime import date 
 
-from app.models.user import User
-from app.auth.dependencies import get_current_user 
+from backend.app.models.user import User
+from backend.app.auth.dependencies import get_current_user 
 
 router = APIRouter(prefix="/api/saving-goals", tags=["Saving Goals"])
 TEMP_USER_ID = "test-user-123"  # Temporary user ID for testing purposes

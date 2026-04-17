@@ -5,7 +5,7 @@ from datetime import date as date_type
 from sqlalchemy import Date, Enum, Numeric, String, DateTime, DECIMAL, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.database import Base
+from backend.app.database import Base
 
 class TransactionType(enum.Enum):
     income = "income"

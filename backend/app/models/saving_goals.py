@@ -4,7 +4,7 @@ from datetime import datetime, date
 from sqlalchemy import Date, Numeric, String, DateTime, DECIMAL, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.database import Base
+from backend.app.database import Base
 
 class SavingGoals(Base):
     __tablename__ = "saving_goals"
