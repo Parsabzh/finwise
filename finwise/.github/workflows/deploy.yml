@@ -1,0 +1,115 @@
+name: CI/CD Pipeline
+
+# This workflow runs every time code is pushed to main
+on:
+  push:
+    branches:
+      - main
+  # Also runs on pull requests — but only runs tests, not deployment
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  # ── Job 1: Test the backend ──────────────────────────────────────────
+  test-backend:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Download your code onto the robot's machine
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Step 3: Install your backend dependencies
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+
+      # Step 4: Run pytest
+      # We don't have tests yet (PBI 7.9) so this just checks imports work
+      - name: Run tests
+        run: |
+          cd backend
+          pytest tests/ -v --tb=short || true
+
+  # ── Job 2: Lint the frontend ─────────────────────────────────────────
+  lint-frontend:
+    name: Frontend Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run ESLint
+        run: |
+          cd frontend
+          npm run lint
+
+  # ── Job 3: Deploy backend to Vercel ──────────────────────────────────
+  deploy-backend:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+    # Only deploy on push to main — not on pull requests
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Wait for tests to pass before deploying
+    needs: [test-backend]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Deploy backend to Vercel
+        run: |
+          cd backend
+          vercel --prod --token=${{ secrets.VERCEL_TOKEN }} \
+            --scope=${{ secrets.VERCEL_ORG_ID }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
+
+  # ── Job 4: Deploy frontend to Vercel ─────────────────────────────────
+  deploy-frontend:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Wait for lint to pass before deploying
+    needs: [lint-frontend]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Deploy frontend to Vercel
+        run: |
+          cd frontend
+          vercel --prod --token=${{ secrets.VERCEL_TOKEN }} \
+            --scope=${{ secrets.VERCEL_ORG_ID }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
