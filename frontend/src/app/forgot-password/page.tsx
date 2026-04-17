@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
         <Card style={{ padding: 32 }}>
           <h2 style={{ marginBottom: 12 }}>Reset your password</h2>
           <p style={{ marginBottom: 16 }}>
-            Enter the email address for your account and we'll send a reset link.
+            {"Enter the email address for your account and we'll send a reset link."}
           </p>
 
           {error && <div className={styles.alert}>{error}</div>}
