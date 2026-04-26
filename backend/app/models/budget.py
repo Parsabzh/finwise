@@ -4,7 +4,7 @@ from datetime import datetime, date
 from sqlalchemy import Date, Numeric, String, DateTime, DECIMAL, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column
 
-from backend.app.database import Base
+from app.database import Base
 
 class Budget(Base):
     __tablename__ = "budgets"

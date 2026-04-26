@@ -4,7 +4,7 @@ from sqlalchemy import String, Date, DateTime, Numeric, Boolean, ForeignKey, fun
 from sqlalchemy.orm import Mapped, mapped_column
 from decimal import Decimal
 
-from backend.app.database import Base
+from app.database import Base
 
 class RecurringTransaction(Base):
     __tablename__ = "recurring_transactions"

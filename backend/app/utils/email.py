@@ -2,7 +2,7 @@ import smtplib
 import logging
 from email.message import EmailMessage
 
-from backend.app.config import settings
+from app.config import settings
 
 logger = logging.getLogger(__name__)
 

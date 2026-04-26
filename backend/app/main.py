@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from backend.app.routes.transactions import router as transactions_router
-from backend.app.routes.budgets import router as budgets_router
-from backend.app.routes.saving_goals import router as saving_goals_router
-from backend.app.routes.summary import router as summary_router
-from backend.app.routes.recurring import router as recurring_router
-from backend.app.routes.auth import router as auth_router
+from app.routes.transactions import router as transactions_router
+from app.routes.budgets import router as budgets_router
+from app.routes.saving_goals import router as saving_goals_router
+from app.routes.summary import router as summary_router
+from app.routes.recurring import router as recurring_router
+from app.routes.auth import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
