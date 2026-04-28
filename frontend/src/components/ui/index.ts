@@ -9,3 +9,4 @@ export { StatCard } from "./StatCard";
 export { EmptyState } from "./EmptyState";
 export { MonthNavigator } from "./MonthNavigator";
 export { Spinner } from "./Spinner";
+export { CategoryManager } from "./CategoryManager";
