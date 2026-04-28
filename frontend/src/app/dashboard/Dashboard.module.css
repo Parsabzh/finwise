@@ -26,3 +26,37 @@
 .goalBottom { display:flex; justify-content:space-between; margin-top:4px; }
 .goalAmt { font-size:11px; color:var(--color-text-tertiary); }
 .loading { display:flex; align-items:center; justify-content:center; height:400px; color:var(--color-text-tertiary); gap:10px; }
+
+/* ── Quick-add form (reused from Transactions page) ─────────────────── */
+.formGrid { display:flex; flex-direction:column; gap:16px; }
+.formRow { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.formActions { display:flex; gap:10px; justify-content:flex-end; margin-top:8px; }
+
+/* ── Floating Action Button ──────────────────────────────────────────── */
+/* The FAB is positioned fixed relative to the viewport so it's always
+   reachable no matter how far the user has scrolled. This is a well-known
+   UX pattern from Material Design — one tap to do the most common action. */
+.fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-teal);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.40);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+  z-index: 50;
+}
+.fab:hover {
+  background: var(--color-teal-dark);
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.50);
+}
+.fab:active { transform: scale(0.95); }
