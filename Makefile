@@ -17,6 +17,14 @@ install:
 dev:
 	make -j2 backend frontend
 
+# Run alembic migrations locally
+migrate:
+	cd backend && DATABASE_URL=postgresql://finwise:finwise123@localhost:5433/finwise PYTHONPATH=. alembic upgrade head
+
+# Generate a new migration: make revision m="your message"
+revision:
+	cd backend && DATABASE_URL=postgresql://finwise:finwise123@localhost:5433/finwise PYTHONPATH=. alembic revision --autogenerate -m "$(m)"
+
 # Kill processes running on ports (fix common issues)
 kill:
 	lsof -ti:8000 | xargs kill -9 || true

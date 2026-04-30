@@ -2,8 +2,8 @@ export interface UserCreate { email: string; name: string; password: string; }
 export interface UserResponse { id: string; email: string; name: string; created_at: string; }
 export interface TokenResponse { access_token: string; token_type: string; }
 export type TransactionType = "income" | "expense";
-export interface TransactionCreate { amount: number; type: TransactionType; category: string; description: string; date: string; }
-export interface Transaction { id: string; user_id: string; amount: number; type: string; category: string; description: string; date: string; ai_category: string | null; created_at: string; }
+export interface TransactionCreate { amount: number; type: TransactionType; category: string; description: string; date: string; source: string | null; }
+export interface Transaction { id: string; user_id: string; amount: number; type: string; category: string; description: string; date: string; source: string | null; ai_category: string | null; created_at: string; }
 export interface BudgetCreate { category: string; limit_amount: number; month: string; }
 export interface Budget { id: string; user_id: string; category: string; limit_amount: number; month: string; created_at: string; }
 export interface SavingGoalCreate { name: string; target_amount: number; deadline: string | null; }

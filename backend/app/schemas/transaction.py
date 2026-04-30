@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from datetime import date, datetime
 from enum import Enum
 import decimal
+
 class TransactionType(str, Enum):
     income = "income"
     expense = "expense"
@@ -12,6 +13,8 @@ class TransactionCreate(BaseModel):
     category: str
     description: str
     date: date
+    # Optional — user picks ING, ABN, CREDIT, or leaves it blank
+    source: str | None = None
 
 class TransactionResponse(BaseModel):
     id: str
@@ -22,6 +25,7 @@ class TransactionResponse(BaseModel):
     description: str
     date: date
     ai_category: str | None
+    source: str | None
     created_at: datetime
 
     class Config:

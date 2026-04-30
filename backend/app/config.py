@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     reset_token_expire_minutes: int = 15  
     frontend_url: str = "http://localhost:3000"
 
+    cron_secret: str = ""
+
     # SMTP/email settings (leave empty to log reset links in dev)
     smtp_host: str = ""
     smtp_port: int = 587

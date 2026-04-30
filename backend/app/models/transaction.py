@@ -22,4 +22,7 @@ class Transaction(Base):
     description: Mapped[str] = mapped_column(String)
     date: Mapped[date_type] = mapped_column(Date)
     ai_category: Mapped[str | None] = mapped_column(String, nullable=True, default=None)
+    # source: which bank account this transaction came from.
+    # nullable=True so existing rows are unaffected when the migration runs.
+    source: Mapped[str | None] = mapped_column(String, nullable=True, default=None)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())

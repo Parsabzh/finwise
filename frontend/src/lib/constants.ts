@@ -3,6 +3,9 @@ export const CATEGORIES = [
   "dining","subscriptions","health","shopping","entertainment","education","other",
 ] as const;
 
+export const SOURCES = ["ING", "ABN", "CREDIT"] as const;
+export type Source = (typeof SOURCES)[number];
+
 export type Category = (typeof CATEGORIES)[number];
 
 export const CATEGORY_COLORS: Record<string, string> = {
