@@ -11,7 +11,7 @@ import { formatCurrency, capitalize, todayISO } from "@/lib/utils";
 import type { Transaction, SummaryResponse, SavingGoal, TransactionCreate } from "@/types";
 import s from "./Dashboard.module.css";
 
-const EMPTY: TransactionCreate = { amount: 0, type: "expense", category: "other", description: "", date: todayISO() };
+const EMPTY: TransactionCreate = { amount: 0, type: "expense", category: "other", description: "", date: todayISO(), source: null };
 
 export function DashboardPage() {
   const { token } = useAuth();
