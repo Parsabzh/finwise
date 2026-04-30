@@ -32,12 +32,12 @@ export function useCategories() {
 
   const addCategory = useCallback((name: string) => {
     const slug = name.trim().toLowerCase().replace(/\s+/g, "_");
-    if (!slug || all.includes(slug)) return false; // duplicate guard
+    if (!slug || (CATEGORIES as readonly string[]).includes(slug) || custom.includes(slug)) return false;
     const next = [...custom, slug];
     setCustom(next);
     saveCustom(next);
     return true;
-  }, [custom, all]);
+  }, [custom]);
 
   const deleteCategory = useCallback((name: string) => {
     // Built-in categories cannot be deleted — they're part of the app's
