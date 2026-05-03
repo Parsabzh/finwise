@@ -5,7 +5,7 @@ from app.routes.saving_goals import router as saving_goals_router
 from app.routes.summary import router as summary_router
 from app.routes.recurring import router as recurring_router
 from app.routes.auth import router as auth_router
-from app.routes import persons
+from app.routes.person import router as persons_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -34,4 +34,4 @@ app.include_router(saving_goals_router)
 app.include_router(summary_router)
 app.include_router(recurring_router)
 app.include_router(auth_router)
-app.include_router(persons.router)
+app.include_router(persons_router)
