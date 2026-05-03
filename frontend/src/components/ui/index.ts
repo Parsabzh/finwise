@@ -10,3 +10,4 @@ export { EmptyState } from "./EmptyState";
 export { MonthNavigator } from "./MonthNavigator";
 export { Spinner } from "./Spinner";
 export { CategoryManager } from "./CategoryManager";
+export { PersonSelect } from "./PersonSelect";

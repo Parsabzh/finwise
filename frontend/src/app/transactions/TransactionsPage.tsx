@@ -6,11 +6,12 @@ import {
 } from "lucide-react";
 import {
   Card, Button, Input, Select, Modal, Badge,
-  MonthNavigator, EmptyState, Spinner, CategoryManager,
+  MonthNavigator, EmptyState, Spinner, CategoryManager, PersonSelect,
 } from "@/components/ui";
 import { useAuth } from "@/hooks/useAuth";
 import { useMonthNav } from "@/hooks/useMonthNav";
 import { useCategories } from "@/hooks/useCategories";
+import { usePersons } from "@/hooks/usePersons";
 import { getTransactions, createTransaction, updateTransaction, deleteTransaction } from "@/lib/api";
 import { formatCurrency, capitalize, todayISO } from "@/lib/utils";
 import { SOURCES } from "@/lib/constants";
@@ -144,6 +145,7 @@ export function TransactionsPage() {
   const { token } = useAuth();
   const { month, prev, next } = useMonthNav();
   const { categories } = useCategories();
+  const { persons, create: createPerson } = usePersons();
 
   const [txs, setTxs] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -323,6 +325,15 @@ export function TransactionsPage() {
             value={form.source ?? ""}
             onChange={e => setForm({ ...form, source: e.target.value || null })}
           />
+          <div>
+            <label style={{ display: "block", marginBottom: 6, fontSize: 13, fontWeight: 500 }}>Person</label>
+            <PersonSelect
+              persons={persons}
+              value={form.person_id}
+              onChange={id => setForm({ ...form, person_id: id })}
+              onCreate={createPerson}
+            />
+          </div>
           <div className={s.formActions}>
             <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
             <Button onClick={save} loading={saving}>{editTx ? "Update" : "Create"}</Button>

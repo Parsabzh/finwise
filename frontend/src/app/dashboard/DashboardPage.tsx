@@ -1,11 +1,12 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { TrendingUp, TrendingDown, PiggyBank, Tag, Plus } from "lucide-react";
-import { Card, StatCard, MonthNavigator, ProgressBar, Badge, Spinner, Modal, Button, Input, Select } from "@/components/ui";
+import { Card, StatCard, MonthNavigator, ProgressBar, Badge, Spinner, Modal, Button, Input, Select, PersonSelect } from "@/components/ui";
 import { SpendingPieChart, BudgetBarChart } from "@/components/charts";
 import { useAuth } from "@/hooks/useAuth";
 import { useMonthNav } from "@/hooks/useMonthNav";
 import { useCategories } from "@/hooks/useCategories";
+import { usePersons } from "@/hooks/usePersons";
 import { getTransactions, getSummary, getSavingGoals, createTransaction } from "@/lib/api";
 import { formatCurrency, capitalize, todayISO } from "@/lib/utils";
 import type { Transaction, SummaryResponse, SavingGoal, TransactionCreate } from "@/types";
@@ -17,6 +18,7 @@ export function DashboardPage() {
   const { token } = useAuth();
   const { month, prev, next } = useMonthNav();
   const { categories } = useCategories();
+  const { persons, create: createPerson } = usePersons();
   const [summary, setSummary] = useState<SummaryResponse | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [goals, setGoals] = useState<SavingGoal[]>([]);
@@ -161,6 +163,15 @@ export function DashboardPage() {
               label="Date" type="date"
               value={form.date}
               onChange={e => setForm({ ...form, date: e.target.value })}
+            />
+          </div>
+          <div>
+            <label style={{ display: "block", marginBottom: 6, fontSize: 13, fontWeight: 500 }}>Person</label>
+            <PersonSelect
+              persons={persons}
+              value={form.person_id}
+              onChange={id => setForm({ ...form, person_id: id })}
+              onCreate={createPerson}
             />
           </div>
           <div className={s.formActions}>
