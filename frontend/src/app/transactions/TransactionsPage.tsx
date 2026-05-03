@@ -24,7 +24,7 @@ type GroupKey = string | null; // null = "No Source"
 
 const EMPTY: TransactionCreate = {
   amount: 0, type: "expense", category: "other",
-  description: "", date: todayISO(), source: null,
+  description: "", date: todayISO(), source: null, person_id: null,
 };
 
 // ─── Pure helpers (no side effects, easy to unit test) ───────────────────────
@@ -193,7 +193,7 @@ export function TransactionsPage() {
     setForm({
       amount: Number(tx.amount), type: tx.type as "income" | "expense",
       category: tx.category, description: tx.description,
-      date: tx.date, source: tx.source,
+      date: tx.date, source: tx.source, person_id: tx.person_id ?? null,
     });
     setShowModal(true);
   };
