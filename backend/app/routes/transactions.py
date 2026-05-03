@@ -1,30 +1,28 @@
-from fastapi import APIRouter, Depends, HTTPException,  Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import Optional
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
+from datetime import date
 
 from app.database import get_db
 from app.schemas.transaction import TransactionCreate, TransactionResponse
-
 from app.models.transaction import Transaction
-from datetime import date
-
 from app.models.user import User
 from app.auth.dependencies import get_current_user
 
 router = APIRouter(prefix="/api/transactions", tags=["Transactions"])
 
 
-
 @router.post("/", response_model=TransactionResponse, status_code=201)
-def create_transaction(data: TransactionCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> Transaction:
-    transaction = Transaction(**data.model_dump(),
-        user_id=current_user.id
-    )
+def create_transaction(
+    data: TransactionCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+) -> Transaction:
+    transaction = Transaction(**data.model_dump(), user_id=current_user.id)
     db.add(transaction)
     db.commit()
     db.refresh(transaction)
     return transaction
-
 
 
 @router.get("/", response_model=list[TransactionResponse])
@@ -38,40 +36,63 @@ def list_transactions(
     current_user: User = Depends(get_current_user)
 ) -> list[Transaction]:
 
-    query = db.query(Transaction).filter(Transaction.user_id == current_user.id)
+    query = (
+        db.query(Transaction)
+        .options(joinedload(Transaction.person))  # fetch person in the same query, avoids N+1
+        .filter(Transaction.user_id == current_user.id)
+    )
+
     if month:
         year, month_num = map(int, month.split("-"))
         first_of_month = date(year, month_num, 1)
-        if month_num == 12:
-            first_of_next_month = date(year + 1, 1, 1)
-        else:
-            first_of_next_month = date(year, month_num + 1, 1)
+        first_of_next_month = date(year + 1, 1, 1) if month_num == 12 else date(year, month_num + 1, 1)
         query = query.filter(Transaction.date >= first_of_month, Transaction.date < first_of_next_month)
 
     if category:
         query = query.filter(Transaction.category == category)
     if type:
         query = query.filter(Transaction.type == type)
-    
-    return query.offset(skip).limit(limit).all()
+
+    # ✅ Sort by transaction date, not updated_at — edits no longer cause reordering
+    return query.order_by(Transaction.date.desc(), Transaction.created_at.desc()).offset(skip).limit(limit).all()
+
 
 @router.put("/{transaction_id}", response_model=TransactionResponse)
-def update_transaction(transaction_id: str, data: TransactionCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> Transaction:
-    
-    transaction= db.query(Transaction).filter(Transaction.id == transaction_id, Transaction.user_id == current_user.id).first()
+def update_transaction(
+    transaction_id: str,
+    data: TransactionCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+) -> Transaction:
+    transaction = db.query(Transaction).filter(
+        Transaction.id == transaction_id,
+        Transaction.user_id == current_user.id
+    ).first()
+
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
+
     for key, value in data.model_dump().items():
         setattr(transaction, key, value)
+
     db.commit()
     db.refresh(transaction)
     return transaction
 
+
 @router.delete("/{transaction_id}", status_code=204)
-def delete_transaction(transaction_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> None:
-    transaction = db.query(Transaction).filter(Transaction.id == transaction_id, Transaction.user_id == current_user.id).first()
+def delete_transaction(
+    transaction_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+) -> None:
+    transaction = db.query(Transaction).filter(
+        Transaction.id == transaction_id,
+        Transaction.user_id == current_user.id
+    ).first()
+
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
+
     db.delete(transaction)
     db.commit()
-    return None

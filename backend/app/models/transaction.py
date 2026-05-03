@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime, timezone as tz
 from datetime import date as date_type
 from sqlalchemy import Date, Enum, Numeric, String, DateTime, DECIMAL, ForeignKey, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 
@@ -26,3 +26,5 @@ class Transaction(Base):
     # nullable=True so existing rows are unaffected when the migration runs.
     source: Mapped[str | None] = mapped_column(String, nullable=True, default=None)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    person_id: Mapped[str | None] = mapped_column(String, ForeignKey("persons.id"), nullable=True)
+    person    = relationship("Person", back_populates="transactions")

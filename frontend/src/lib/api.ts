@@ -1,4 +1,4 @@
-import type { TokenResponse, UserCreate, UserResponse, Transaction, TransactionCreate, Budget, BudgetCreate, SavingGoal, SavingGoalCreate, RecurringTransaction, RecurringTransactionCreate, SummaryResponse } from "@/types";
+import type { TokenResponse, UserCreate, UserResponse, Transaction, TransactionCreate, Budget, BudgetCreate, SavingGoal, SavingGoalCreate, RecurringTransaction, RecurringTransactionCreate, SummaryResponse, Person } from "@/types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -67,3 +67,8 @@ export async function updateRecurringTransaction(token: string, id: string, data
 export async function deleteRecurringTransaction(token: string, id: string): Promise<void> { return request(`/api/recurring/${id}`, { method: "DELETE", token }); }
 
 export async function getSummary(token: string, month: string): Promise<SummaryResponse> { return request(`/api/summary/?month=${month}`, { token }); }
+
+export async function getPersons(token: string): Promise<Person[]> { return request("/api/persons/", { token }); }
+export async function createPerson(token: string, name: string): Promise<Person> { return request("/api/persons/", { method: "POST", body: { name }, token }); }
+export async function updatePerson(token: string, id: string, name: string): Promise<Person> { return request(`/api/persons/${id}`, { method: "PUT", body: { name }, token }); }
+export async function deletePerson(token: string, id: string): Promise<void> { return request(`/api/persons/${id}`, { method: "DELETE", token }); }
