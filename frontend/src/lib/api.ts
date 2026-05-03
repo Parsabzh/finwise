@@ -73,3 +73,13 @@ export async function getPersons(token: string): Promise<Person[]> { return requ
 export async function createPerson(token: string, name: string): Promise<Person> { return request("/api/persons/", { method: "POST", body: { name }, token }); }
 export async function updatePerson(token: string, id: string, name: string): Promise<Person> { return request(`/api/persons/${id}`, { method: "PUT", body: { name }, token }); }
 export async function deletePerson(token: string, id: string): Promise<void> { return request(`/api/persons/${id}`, { method: "DELETE", token }); }
+
+const getToken = (): string =>
+  typeof window !== "undefined" ? (localStorage.getItem("finwise_token") ?? "") : "";
+
+export const personsApi = {
+  list: () => getPersons(getToken()),
+  create: (name: string) => createPerson(getToken(), name),
+  update: (id: string, name: string) => updatePerson(getToken(), id, name),
+  delete: (id: string) => deletePerson(getToken(), id),
+};
