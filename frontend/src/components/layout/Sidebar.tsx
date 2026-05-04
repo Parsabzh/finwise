@@ -1,9 +1,9 @@
 "use client";
-import { LayoutDashboard, ArrowUpDown, Wallet, Target, Repeat, LogOut } from "lucide-react";
+import { LayoutDashboard, ArrowUpDown, Wallet, Target, Repeat, Users, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import s from "./Sidebar.module.css";
 
-export type PageId = "dashboard" | "transactions" | "budgets" | "goals" | "recurring";
+export type PageId = "dashboard" | "transactions" | "budgets" | "goals" | "recurring" | "persons";
 
 const NAV_ITEMS: { id: PageId; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -11,6 +11,7 @@ const NAV_ITEMS: { id: PageId; label: string; icon: typeof LayoutDashboard }[] =
   { id: "budgets", label: "Budgets", icon: Wallet },
   { id: "goals", label: "Savings Goals", icon: Target },
   { id: "recurring", label: "Recurring", icon: Repeat },
+  { id: "persons", label: "People", icon: Users },
 ];
 
 interface SidebarProps { active: PageId; onNavigate: (p: PageId) => void; onLogout: () => void; open: boolean; onToggle: () => void; }

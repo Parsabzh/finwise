@@ -8,11 +8,13 @@ import { TransactionsPage } from "./transactions/TransactionsPage";
 import { BudgetsPage } from "./budgets/BudgetsPage";
 import { GoalsPage } from "./goals/GoalsPage";
 import { RecurringPage } from "./recurring/RecurringPage";
+import { PersonsPage } from "./persons/PersonsPage";
 import s from "./AppShell.module.css";
 
 const PAGES: Record<PageId, React.ReactNode> = {
   dashboard: <DashboardPage />, transactions: <TransactionsPage />,
   budgets: <BudgetsPage />, goals: <GoalsPage />, recurring: <RecurringPage />,
+  persons: <PersonsPage />,
 };
 
 export function AppShell() {
