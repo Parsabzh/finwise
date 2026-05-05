@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from typing import Optional
 from sqlalchemy.orm import Session, joinedload
 from datetime import date
@@ -8,6 +8,7 @@ from app.schemas.transaction import TransactionCreate, TransactionResponse
 from app.models.transaction import Transaction
 from app.models.user import User
 from app.auth.dependencies import get_current_user
+from app.exceptions import NotFoundException, ForbiddenException
 
 router = APIRouter(prefix="/api/transactions", tags=["Transactions"])
 
@@ -38,7 +39,7 @@ def list_transactions(
 
     query = (
         db.query(Transaction)
-        .options(joinedload(Transaction.person))  # fetch person in the same query, avoids N+1
+        .options(joinedload(Transaction.person))
         .filter(Transaction.user_id == current_user.id)
     )
 
@@ -53,7 +54,6 @@ def list_transactions(
     if type:
         query = query.filter(Transaction.type == type)
 
-    # ✅ Sort by transaction date, not updated_at — edits no longer cause reordering
     return query.order_by(Transaction.date.desc(), Transaction.created_at.desc()).offset(skip).limit(limit).all()
 
 
@@ -66,11 +66,15 @@ def update_transaction(
 ) -> Transaction:
     transaction = db.query(Transaction).filter(
         Transaction.id == transaction_id,
-        Transaction.user_id == current_user.id
     ).first()
 
     if not transaction:
-        raise HTTPException(status_code=404, detail="Transaction not found")
+        raise NotFoundException("Transaction not found")
+
+    # Ownership check: a 403 is more informative than pretending it doesn't exist.
+    # Use 404 if you prefer not to leak existence; 403 is more correct when authenticated.
+    if transaction.user_id != current_user.id:
+        raise ForbiddenException("You do not have permission to edit this transaction")
 
     for key, value in data.model_dump().items():
         setattr(transaction, key, value)
@@ -88,11 +92,13 @@ def delete_transaction(
 ) -> None:
     transaction = db.query(Transaction).filter(
         Transaction.id == transaction_id,
-        Transaction.user_id == current_user.id
     ).first()
 
     if not transaction:
-        raise HTTPException(status_code=404, detail="Transaction not found")
+        raise NotFoundException("Transaction not found")
+
+    if transaction.user_id != current_user.id:
+        raise ForbiddenException("You do not have permission to delete this transaction")
 
     db.delete(transaction)
     db.commit()
