@@ -6,3 +6,5 @@ __pycache__/
 seed_budgets_goals.py
 seed_recurring.py
 seed_transactions.py
+CLAUDE.md
+claude.md
