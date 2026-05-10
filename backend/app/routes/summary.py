@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from datetime import date
+from datetime import date, timedelta
+from typing import Optional
 
 from app.database import get_db
 from app.models.transaction import Transaction
@@ -15,19 +16,29 @@ router = APIRouter(prefix="/api/summary", tags=["Summary"])
 
 @router.get("/", response_model=SummaryResponse)
 def get_summary(
-    month: str = Query(..., description="Month in YYYY-MM format"),
+    month: Optional[str] = Query(None, description="Month in YYYY-MM format"),
+    date_from: Optional[str] = Query(None, description="Start date YYYY-MM-DD"),
+    date_to: Optional[str] = Query(None, description="End date YYYY-MM-DD (inclusive)"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ) -> dict:
-    # Parse month string into date range
-    year, m = map(int, month.split("-"))
-    first_day = date(year, m, 1)
-    if m == 12:
-        next_month = date(year + 1, 1, 1)
+    if date_from and date_to:
+        first_day = date.fromisoformat(date_from)
+        last_day = date.fromisoformat(date_to)
+        next_month = last_day + timedelta(days=1)
+        label = f"{date_from}/{date_to}"
+    elif month:
+        year, m = map(int, month.split("-"))
+        first_day = date(year, m, 1)
+        if m == 12:
+            next_month = date(year + 1, 1, 1)
+        else:
+            next_month = date(year, m + 1, 1)
+        label = month
     else:
-        next_month = date(year, m + 1, 1)
+        raise HTTPException(status_code=422, detail="Provide either 'month' or both 'date_from' and 'date_to'")
 
-    # Base filter: this user + this month
+    # Base filter: this user + date range
     base_filter = [
         Transaction.user_id == current_user.id,
         Transaction.date >= first_day,
@@ -75,7 +86,7 @@ def get_summary(
     ]
 
     return SummaryResponse(
-        month=month,
+        month=label,
         total_income=total_income,
         total_expenses=total_expenses,
         net_savings=total_income - total_expenses,

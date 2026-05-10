@@ -23,7 +23,7 @@ export function BudgetsPage() {
 
   const load = useCallback(async () => {
     if (!token) return; setLoading(true);
-    try { const [b, sm] = await Promise.all([getBudgets(token, month), getSummary(token, month)]); setBudgets(b); setSummary(sm); }
+    try { const [b, sm] = await Promise.all([getBudgets(token, month), getSummary(token, { month })]); setBudgets(b); setSummary(sm); }
     catch (err) { console.error(err); } finally { setLoading(false); }
   }, [month, token]);
   useEffect(() => { load(); }, [load]);

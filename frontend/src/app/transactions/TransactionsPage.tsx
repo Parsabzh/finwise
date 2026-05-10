@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import {
   Plus, Edit3, Trash2, ChevronDown, ChevronRight,
-  ArrowUp, ArrowDown, ChevronsUpDown, Settings2,
+  ArrowUp, ArrowDown, ChevronsUpDown, Settings2, UserCheck,
 } from "lucide-react";
 import {
   Card, Button, Input, Select, Modal, Badge,
@@ -85,7 +85,6 @@ function SourceCluster({ label, txs, sortDir, onCycleSort, SortIcon, onEdit, onD
 
   return (
     <div className={s.cluster}>
-      {/* Cluster header — click anywhere on it to collapse/expand */}
       <div className={s.clusterHeader} onClick={() => setOpen(o => !o)}>
         <div className={s.clusterLeft}>
           <CollapseIcon size={15} className={s.collapseIcon} />
@@ -97,7 +96,6 @@ function SourceCluster({ label, txs, sortDir, onCycleSort, SortIcon, onEdit, onD
         </span>
       </div>
 
-      {/* Rows — hidden when collapsed, but the sort header stays in the parent table */}
       {open && (
         <div className={s.tableWrap}>
           <table className={s.table}>
@@ -108,6 +106,7 @@ function SourceCluster({ label, txs, sortDir, onCycleSort, SortIcon, onEdit, onD
                 </th>
                 <th className={s.th}>Description</th>
                 <th className={s.th}>Category</th>
+                <th className={s.th}>Person</th>
                 <th className={s.th}>Type</th>
                 <th className={`${s.th} ${s["th--right"]}`}>Amount</th>
                 <th className={s.th}></th>
@@ -119,6 +118,7 @@ function SourceCluster({ label, txs, sortDir, onCycleSort, SortIcon, onEdit, onD
                   <td className={`${s.td} ${s["td--date"]}`}>{tx.date}</td>
                   <td className={`${s.td} ${s["td--desc"]}`}>{tx.description}</td>
                   <td className={s.td}><Badge variant={tx.type === "income" ? "teal" : "default"}>{tx.category}</Badge></td>
+                  <td className={`${s.td} ${s["td--person"]}`}>{tx.person_name ?? <span className={s.personNone}>—</span>}</td>
                   <td className={s.td}><Badge variant={tx.type === "income" ? "teal" : "coral"}>{tx.type}</Badge></td>
                   <td className={`${s.td} ${s["td--amount"]} ${tx.type === "income" ? s["td--income"] : s["td--expense"]}`}>
                     {tx.type === "income" ? "+" : "−"}{formatCurrency(tx.amount)}
@@ -152,6 +152,8 @@ export function TransactionsPage() {
   const [catFilter, setCatFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
+  const [personFilter, setPersonFilter] = useState("");
+  const [showPersonFilter, setShowPersonFilter] = useState(false);
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
   const [showModal, setShowModal] = useState(false);
@@ -175,10 +177,10 @@ export function TransactionsPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  // Source filter is client-side — no need for a backend param for 3 static values
-  const filtered = sourceFilter
-    ? txs.filter(tx => tx.source === sourceFilter)
-    : txs;
+  // Source and person filters are client-side
+  const filtered = txs
+    .filter(tx => !sourceFilter || tx.source === sourceFilter)
+    .filter(tx => !showPersonFilter || !personFilter || tx.person_id === personFilter);
 
   // Group then sort within each group
   const groups = groupBySource(filtered);
@@ -253,6 +255,20 @@ export function TransactionsPage() {
             onChange={e => setTypeFilter(e.target.value)}
           />
           <Select options={sourceOptions} value={sourceFilter} onChange={e => setSourceFilter(e.target.value)} />
+          <button
+            className={`${s.personToggle} ${showPersonFilter ? s["personToggle--active"] : ""}`}
+            onClick={() => { setShowPersonFilter(v => !v); setPersonFilter(""); }}
+            title={showPersonFilter ? "Disable person filter" : "Filter by person"}
+          >
+            <UserCheck size={14} /> Person
+          </button>
+          {showPersonFilter && (
+            <Select
+              options={[{ value: "", label: "All people" }, ...persons.map(p => ({ value: p.id, label: p.name }))]}
+              value={personFilter}
+              onChange={e => setPersonFilter(e.target.value)}
+            />
+          )}
         </div>
       </Card>
 

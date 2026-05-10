@@ -1,4 +1,16 @@
 .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+.headerRight { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.rangeToggle {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:6px 12px; border-radius:8px; border:1px solid var(--color-border);
+  background:var(--color-surface); color:var(--color-text-secondary);
+  font-size:12px; font-weight:500; cursor:pointer;
+  transition:all var(--transition-fast);
+}
+.rangeToggle:hover { border-color:var(--color-indigo); color:var(--color-indigo); }
+.rangeToggle--active { background:var(--color-indigo-light); border-color:var(--color-indigo); color:var(--color-indigo); }
+.dateRange { display:flex; align-items:center; gap:6px; }
+.dateSep { font-size:12px; color:var(--color-text-tertiary); }
 .title { margin:0; font-size:22px; font-weight:700; color:var(--color-text); letter-spacing:-0.3px; }
 .subtitle { margin:4px 0 0; font-size:13px; color:var(--color-text-tertiary); }
 .statsGrid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:24px; }

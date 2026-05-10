@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { TrendingUp, TrendingDown, PiggyBank, Tag, Plus } from "lucide-react";
+import { TrendingUp, TrendingDown, PiggyBank, Tag, Plus, CalendarRange, Calendar } from "lucide-react";
 import { Card, StatCard, MonthNavigator, ProgressBar, Badge, Spinner, Modal, Button, Input, Select, PersonSelect } from "@/components/ui";
 import { SpendingPieChart, BudgetBarChart } from "@/components/charts";
 import { useAuth } from "@/hooks/useAuth";
@@ -24,6 +24,10 @@ export function DashboardPage() {
   const [goals, setGoals] = useState<SavingGoal[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [useDateRange, setUseDateRange] = useState(false);
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+
   // Quick-add state — lives on the dashboard so the user never has to navigate
   const [showAddModal, setShowAddModal] = useState(false);
   const [form, setForm] = useState<TransactionCreate>(EMPTY);
@@ -31,15 +35,18 @@ export function DashboardPage() {
 
   const load = useCallback(async () => {
     if (!token) return;
+    if (useDateRange && (!dateFrom || !dateTo)) return;
     setLoading(true);
     try {
+      const query = useDateRange ? { date_from: dateFrom, date_to: dateTo } : { month };
+      const txFilters = useDateRange ? { date_from: dateFrom, date_to: dateTo, limit: 5 } : { month, limit: 5 };
       const [sum, txs, gls] = await Promise.all([
-        getSummary(token, month), getTransactions(token, { month, limit: 5 }), getSavingGoals(token),
+        getSummary(token, query), getTransactions(token, txFilters), getSavingGoals(token),
       ]);
       setSummary(sum); setTransactions(txs); setGoals(gls.slice(0, 4));
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
-  }, [month, token]);
+  }, [month, token, useDateRange, dateFrom, dateTo]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -64,7 +71,25 @@ export function DashboardPage() {
     <div>
       <div className={s.header}>
         <div><h1 className={s.title}>Dashboard</h1><p className={s.subtitle}>Your financial overview</p></div>
-        <MonthNavigator month={month} onPrev={prev} onNext={next} />
+        <div className={s.headerRight}>
+          <button
+            className={`${s.rangeToggle} ${useDateRange ? s["rangeToggle--active"] : ""}`}
+            onClick={() => setUseDateRange(v => !v)}
+            title={useDateRange ? "Switch to month view" : "Switch to custom date range"}
+          >
+            {useDateRange ? <Calendar size={14} /> : <CalendarRange size={14} />}
+            {useDateRange ? "Month" : "Date Range"}
+          </button>
+          {useDateRange ? (
+            <div className={s.dateRange}>
+              <Input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} />
+              <span className={s.dateSep}>to</span>
+              <Input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} />
+            </div>
+          ) : (
+            <MonthNavigator month={month} onPrev={prev} onNext={next} />
+          )}
+        </div>
       </div>
 
       <div className={s.statsGrid}>

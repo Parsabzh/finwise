@@ -1,7 +1,7 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from typing import Optional
 from sqlalchemy.orm import Session, joinedload
-from datetime import date
+from datetime import date, timedelta
 
 from app.database import get_db, SessionLocal
 from app.schemas.transaction import TransactionCreate, TransactionResponse
@@ -50,6 +50,8 @@ def create_transaction(
 @router.get("/", response_model=list[TransactionResponse])
 def list_transactions(
     month: Optional[str] = Query(None, description="Filter by month: YYYY-MM"),
+    date_from: Optional[str] = Query(None, description="Start date YYYY-MM-DD"),
+    date_to: Optional[str] = Query(None, description="End date YYYY-MM-DD (inclusive)"),
     category: Optional[str] = Query(None),
     type: Optional[str] = Query(None, description="income or expense"),
     skip: int = Query(0, ge=0),
@@ -64,7 +66,12 @@ def list_transactions(
         .filter(Transaction.user_id == current_user.id)
     )
 
-    if month:
+    if date_from and date_to:
+        query = query.filter(
+            Transaction.date >= date.fromisoformat(date_from),
+            Transaction.date <= date.fromisoformat(date_to),
+        )
+    elif month:
         year, month_num = map(int, month.split("-"))
         first_of_month = date(year, month_num, 1)
         first_of_next_month = date(year + 1, 1, 1) if month_num == 12 else date(year, month_num + 1, 1)

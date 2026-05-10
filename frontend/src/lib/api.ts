@@ -49,10 +49,12 @@ export async function resetPassword(token: string, new_password: string): Promis
   });
 }
 
-interface TxFilters { month?: string; category?: string; type?: string; skip?: number; limit?: number; }
+interface TxFilters { month?: string; date_from?: string; date_to?: string; category?: string; type?: string; skip?: number; limit?: number; }
 export async function getTransactions(token: string, filters: TxFilters = {}): Promise<Transaction[]> {
   const p = new URLSearchParams();
   if (filters.month) p.set("month", filters.month);
+  if (filters.date_from) p.set("date_from", filters.date_from);
+  if (filters.date_to) p.set("date_to", filters.date_to);
   if (filters.category) p.set("category", filters.category);
   if (filters.type) p.set("type", filters.type);
   p.set("limit", String(filters.limit || 100));
@@ -77,7 +79,13 @@ export async function createRecurringTransaction(token: string, data: RecurringT
 export async function updateRecurringTransaction(token: string, id: string, data: RecurringTransactionCreate): Promise<RecurringTransaction> { return request(`/api/recurring/${id}`, { method: "PUT", body: data, token }); }
 export async function deleteRecurringTransaction(token: string, id: string): Promise<void> { return request(`/api/recurring/${id}`, { method: "DELETE", token }); }
 
-export async function getSummary(token: string, month: string): Promise<SummaryResponse> { return request(`/api/summary/?month=${month}`, { token }); }
+export async function getSummary(token: string, query: { month?: string; date_from?: string; date_to?: string }): Promise<SummaryResponse> {
+  const p = new URLSearchParams();
+  if (query.month) p.set("month", query.month);
+  if (query.date_from) p.set("date_from", query.date_from);
+  if (query.date_to) p.set("date_to", query.date_to);
+  return request(`/api/summary/?${p}`, { token });
+}
 
 export async function getPersons(token: string): Promise<Person[]> { return request("/api/persons/", { token }); }
 export async function createPerson(token: string, name: string): Promise<Person> { return request("/api/persons/", { method: "POST", body: { name }, token }); }
