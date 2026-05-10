@@ -8,8 +8,23 @@ from app.models.transaction import Transaction
 from app.ai.categories import DEFAULT_CATEGORIES
 from app.ai.category_resolver import resolve_categories
 from app.ai.categorizer import categorize
+from app.ai.ollama_client import ollama_available, ollama_generate, OLLAMA_URL, OLLAMA_MODEL
 
 router = APIRouter(prefix="/api/ai", tags=["AI"])
+
+
+@router.get("/health")
+def ollama_health() -> dict:
+    """Check if Ollama is reachable and the model responds."""
+    if not ollama_available():
+        return {"status": "unreachable", "url": OLLAMA_URL, "model": OLLAMA_MODEL}
+    test = ollama_generate("Reply with the single word: ok")
+    return {
+        "status": "ok" if test else "model_error",
+        "url": OLLAMA_URL,
+        "model": OLLAMA_MODEL,
+        "response": test,
+    }
 
 
 @router.get("/categories/defaults")

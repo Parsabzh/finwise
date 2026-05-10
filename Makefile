@@ -1,6 +1,6 @@
 SUPABASE_URL := postgresql://postgres.dmsjszlaipwppyfbdteg:ZZdyPPQbNRtnQ3Pg@aws-1-eu-west-2.pooler.supabase.com:5432/postgres
 
-.PHONY: backend frontend dev db db-stop install kill migrate-prod revision-prod
+.PHONY: backend frontend dev db db-stop seed install kill migrate-prod revision-prod
 
 # Start only the database
 db:
@@ -17,6 +17,10 @@ backend:
 # Start frontend
 frontend:
 	sudo docker compose up -d frontend
+
+# Seed the database directly (starts DB first, no server needed)
+seed: db
+	cd backend && PYTHONPATH=. python seed.py
 
 # Install dependencies (both sides)
 install:
