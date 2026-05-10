@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { TrendingUp, TrendingDown, PiggyBank, Tag, Plus, CalendarRange, Calendar } from "lucide-react";
 import { Card, StatCard, MonthNavigator, ProgressBar, Badge, Spinner, Modal, Button, Input, Select, PersonSelect } from "@/components/ui";
-import { SpendingPieChart, BudgetBarChart } from "@/components/charts";
+import { SpendingPieChart, BudgetBarChart, AICategoryPieChart } from "@/components/charts";
 import { useAuth } from "@/hooks/useAuth";
 import { useMonthNav } from "@/hooks/useMonthNav";
 import { useCategories } from "@/hooks/useCategories";
@@ -24,9 +24,13 @@ export function DashboardPage() {
   const [goals, setGoals] = useState<SavingGoal[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
+
   const [useDateRange, setUseDateRange] = useState(false);
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [appliedFrom, setAppliedFrom] = useState("");
+  const [appliedTo, setAppliedTo] = useState("");
 
   // Quick-add state — lives on the dashboard so the user never has to navigate
   const [showAddModal, setShowAddModal] = useState(false);
@@ -35,18 +39,19 @@ export function DashboardPage() {
 
   const load = useCallback(async () => {
     if (!token) return;
-    if (useDateRange && (!dateFrom || !dateTo)) return;
+    if (useDateRange && (!appliedFrom || !appliedTo)) return;
     setLoading(true);
     try {
-      const query = useDateRange ? { date_from: dateFrom, date_to: dateTo } : { month };
-      const txFilters = useDateRange ? { date_from: dateFrom, date_to: dateTo, limit: 5 } : { month, limit: 5 };
-      const [sum, txs, gls] = await Promise.all([
-        getSummary(token, query), getTransactions(token, txFilters), getSavingGoals(token),
+      const query = useDateRange ? { date_from: appliedFrom, date_to: appliedTo } : { month };
+      const txFilters = useDateRange ? { date_from: appliedFrom, date_to: appliedTo, limit: 5 } : { month, limit: 5 };
+      const allFilters = useDateRange ? { date_from: appliedFrom, date_to: appliedTo, limit: 1000 } : { month, limit: 1000 };
+      const [sum, txs, gls, all] = await Promise.all([
+        getSummary(token, query), getTransactions(token, txFilters), getSavingGoals(token), getTransactions(token, allFilters),
       ]);
-      setSummary(sum); setTransactions(txs); setGoals(gls.slice(0, 4));
+      setSummary(sum); setTransactions(txs); setGoals(gls.slice(0, 4)); setAllTransactions(all);
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
-  }, [month, token, useDateRange, dateFrom, dateTo]);
+  }, [month, token, useDateRange, appliedFrom, appliedTo]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -85,6 +90,12 @@ export function DashboardPage() {
               <Input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} />
               <span className={s.dateSep}>to</span>
               <Input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} />
+              <Button
+                onClick={() => { setAppliedFrom(dateFrom); setAppliedTo(dateTo); }}
+                disabled={!dateFrom || !dateTo}
+              >
+                Apply
+              </Button>
             </div>
           ) : (
             <MonthNavigator month={month} onPrev={prev} onNext={next} />
@@ -101,6 +112,7 @@ export function DashboardPage() {
 
       <div className={s.chartsGrid}>
         <SpendingPieChart data={summary?.by_category || []} />
+        <AICategoryPieChart transactions={allTransactions} />
         <BudgetBarChart data={summary?.by_category || []} />
       </div>
 

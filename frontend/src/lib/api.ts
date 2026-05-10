@@ -11,11 +11,14 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
   if (token) headers["Authorization"] = `Bearer ${token}`;
   const res = await fetch(`${BASE_URL}${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
   if (res.status === 204) return null as T;
-  const data = await res.json();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let data: any;
+  try { data = await res.json(); } catch { data = {}; }
   if (!res.ok) {
-    const detail = Array.isArray(data.detail)
-      ? data.detail.map((e: { msg: string }) => e.msg).join(", ")
-      : data.detail;
+    const raw = data?.detail;
+    const detail: string = Array.isArray(raw)
+      ? raw.map((e: { msg: string }) => e.msg).join(", ")
+      : typeof raw === "string" ? raw : "";
     throw new Error(detail || `Request failed (${res.status})`);
   }
   return data as T;
