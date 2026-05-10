@@ -11,8 +11,7 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
   if (token) headers["Authorization"] = `Bearer ${token}`;
   const res = await fetch(`${BASE_URL}${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
   if (res.status === 204) return null as T;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let data: any;
+  let data: any; // intentional: res.json() shape is unknown at compile time
   try { data = await res.json(); } catch { data = {}; }
   if (!res.ok) {
     const raw = data?.detail;
