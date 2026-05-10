@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from typing import Optional
 from sqlalchemy.orm import Session, joinedload
 from datetime import date
 
-from app.database import get_db
+from app.database import get_db, SessionLocal
 from app.schemas.transaction import TransactionCreate, TransactionResponse
 from app.models.transaction import Transaction
 from app.models.user import User
@@ -13,9 +13,29 @@ from app.exceptions import NotFoundException, ForbiddenException
 router = APIRouter(prefix="/api/transactions", tags=["Transactions"])
 
 
+def _ai_categorize(transaction_id: str, user_id: str) -> None:
+    """Background task: call Ollama to fill in ai_category for one transaction."""
+    from app.ai.categorizer import categorize
+    from app.ai.category_resolver import resolve_categories
+
+    db = SessionLocal()
+    try:
+        tx = db.query(Transaction).filter(Transaction.id == transaction_id).first()
+        if tx is None:
+            return
+        categories = resolve_categories(user_id, db)
+        result = categorize(tx.description, categories)
+        if result:
+            tx.ai_category = result
+            db.commit()
+    finally:
+        db.close()
+
+
 @router.post("/", response_model=TransactionResponse, status_code=201)
 def create_transaction(
     data: TransactionCreate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ) -> Transaction:
@@ -23,6 +43,7 @@ def create_transaction(
     db.add(transaction)
     db.commit()
     db.refresh(transaction)
+    background_tasks.add_task(_ai_categorize, transaction.id, current_user.id)
     return transaction
 
 
@@ -61,6 +82,7 @@ def list_transactions(
 def update_transaction(
     transaction_id: str,
     data: TransactionCreate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ) -> Transaction:
@@ -78,9 +100,11 @@ def update_transaction(
 
     for key, value in data.model_dump().items():
         setattr(transaction, key, value)
+    transaction.ai_category = None  # reset so background task re-categorizes
 
     db.commit()
     db.refresh(transaction)
+    background_tasks.add_task(_ai_categorize, transaction.id, current_user.id)
     return transaction
 
 

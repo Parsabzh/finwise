@@ -10,6 +10,8 @@ from app.routes.summary import router as summary_router
 from app.routes.recurring import router as recurring_router
 from app.routes.auth import router as auth_router
 from app.routes.person import router as persons_router
+from app.routes.ai import router as ai_router
+from app.routes.users import router as users_router
 
 from app.exceptions import FinWiseException
 from app.error_handlers import (
@@ -34,9 +36,11 @@ def health():
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",    # Next.js dev server
+        "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://finwise-frontend-delta.vercel.app" #prod
+        "http://localhost:3002",
+        "http://127.0.0.1:3002",
+        "https://finwise-frontend-delta.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -50,3 +54,5 @@ app.include_router(summary_router)
 app.include_router(recurring_router)
 app.include_router(auth_router)
 app.include_router(persons_router)
+app.include_router(ai_router)
+app.include_router(users_router)

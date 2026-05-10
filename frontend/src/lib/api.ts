@@ -1,7 +1,7 @@
 import type { TokenResponse, UserCreate, UserResponse, Transaction, TransactionCreate, Budget, BudgetCreate, SavingGoal, SavingGoalCreate, RecurringTransaction, RecurringTransactionCreate, SummaryResponse, Person } from "@/types";
 export type { Person };
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8002";
 
 interface RequestOptions { method?: string; body?: unknown; token?: string; }
 
@@ -12,7 +12,12 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
   if (res.status === 204) return null as T;
   const data = await res.json();
-  if (!res.ok) throw new Error(data.detail || `Request failed (${res.status})`);
+  if (!res.ok) {
+    const detail = Array.isArray(data.detail)
+      ? data.detail.map((e: { msg: string }) => e.msg).join(", ")
+      : data.detail;
+    throw new Error(detail || `Request failed (${res.status})`);
+  }
   return data as T;
 }
 
@@ -21,7 +26,12 @@ export async function register(data: UserCreate): Promise<UserResponse> { return
 export async function login(email: string, password: string): Promise<TokenResponse> {
   const res = await fetch(`${BASE_URL}/api/auth/login`, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}` });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.detail || "Login failed");
+  if (!res.ok) {
+    const detail = Array.isArray(data.detail)
+      ? data.detail.map((e: { msg: string }) => e.msg).join(", ")
+      : data.detail;
+    throw new Error(detail || "Login failed");
+  }
   return data as TokenResponse;
 }
 

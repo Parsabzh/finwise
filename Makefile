@@ -1,23 +1,31 @@
 SUPABASE_URL := postgresql://postgres.dmsjszlaipwppyfbdteg:ZZdyPPQbNRtnQ3Pg@aws-1-eu-west-2.pooler.supabase.com:5432/postgres
 
-.PHONY: backend frontend dev install kill migrate-prod revision-prod
+.PHONY: backend frontend dev db db-stop install kill migrate-prod revision-prod
 
-# Run FastAPI backend
+# Start only the database
+db:
+	sudo docker compose up -d db
+
+# Stop the database container
+db-stop:
+	sudo docker compose stop db
+
+# Start backend (db starts automatically via depends_on)
 backend:
-	cd backend && PYTHONPATH=. python -m uvicorn app.main:app --reload --port 8000
+	sudo docker compose up -d backend
 
-# Run frontend (React/Vite/etc.)
+# Start frontend
 frontend:
-	cd frontend && npm run dev
+	sudo docker compose up -d frontend
 
 # Install dependencies (both sides)
 install:
 	cd frontend && npm install
 	cd backend && pip install -r requirements.txt
 
-# Run both backend + frontend together
+# Run all services with live logs
 dev:
-	make -j2 backend frontend
+	sudo docker compose up --build
 
 # Run alembic migrations locally
 migrate:
@@ -35,7 +43,6 @@ migrate-prod:
 revision-prod:
 	cd backend && DATABASE_URL=$(SUPABASE_URL) PYTHONPATH=. alembic revision --autogenerate -m "$(m)"
 
-# Kill processes running on ports (fix common issues)
+# Stop and remove all containers
 kill:
-	lsof -ti:8000 | xargs kill -9 || true
-	lsof -ti:3000 | xargs kill -9 || true
+	sudo docker compose down

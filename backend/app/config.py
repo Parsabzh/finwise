@@ -13,6 +13,10 @@ class Settings(BaseSettings):
 
     cron_secret: str = ""
 
+    ollama_url: str = "http://localhost:11434"
+    ollama_model: str = "llama3.1:8b"
+    ollama_timeout: int = 30
+
     # SMTP/email settings (leave empty to log reset links in dev)
     smtp_host: str = ""
     smtp_port: int = 587
