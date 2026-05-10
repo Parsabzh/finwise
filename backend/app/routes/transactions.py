@@ -55,7 +55,7 @@ def list_transactions(
     category: Optional[str] = Query(None),
     type: Optional[str] = Query(None, description="income or expense"),
     skip: int = Query(0, ge=0),
-    limit: int = Query(20, ge=1, le=100),
+    limit: int = Query(20, ge=1, le=1000),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ) -> list[Transaction]:
