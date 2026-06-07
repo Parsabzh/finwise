@@ -13,3 +13,6 @@ export interface RecurringTransaction { id: string; user_id: string; amount: num
 export interface CategorySummary { category: string; total: number; budget: number | null; }
 export interface SummaryResponse { month: string; total_income: number; total_expenses: number; net_savings: number; by_category: CategorySummary[]; }
 export interface Person { id: string; name: string; created_at: string; }
+export interface ParsedTransaction { date: string; description: string; amount: number; type: TransactionType; category: string; }
+export interface ParsePreview { count: number; transactions: ParsedTransaction[]; }
+export interface ImportResult { imported: number; person_id: string; source: string; }

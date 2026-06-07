@@ -27,6 +27,7 @@ services:
       ALGORITHM: ${ALGORITHM}
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
       OLLAMA_URL: http://172.17.0.1:11434
+      # GEMINI_API_KEY / GEMINI_MODEL are read from backend/.env (mounted at /app/.env)
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:

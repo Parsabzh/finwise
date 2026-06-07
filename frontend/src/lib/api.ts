@@ -1,4 +1,4 @@
-import type { TokenResponse, UserCreate, UserResponse, Transaction, TransactionCreate, Budget, BudgetCreate, SavingGoal, SavingGoalCreate, RecurringTransaction, RecurringTransactionCreate, SummaryResponse, Person } from "@/types";
+import type { TokenResponse, UserCreate, UserResponse, Transaction, TransactionCreate, Budget, BudgetCreate, SavingGoal, SavingGoalCreate, RecurringTransaction, RecurringTransactionCreate, SummaryResponse, Person, ParsePreview, ParsedTransaction, ImportResult } from "@/types";
 export type { Person };
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8002";
@@ -93,3 +93,21 @@ export async function getPersons(token: string): Promise<Person[]> { return requ
 export async function createPerson(token: string, name: string): Promise<Person> { return request("/api/persons/", { method: "POST", body: { name }, token }); }
 export async function updatePerson(token: string, id: string, name: string): Promise<Person> { return request(`/api/persons/${id}`, { method: "PUT", body: { name }, token }); }
 export async function deletePerson(token: string, id: string): Promise<void> { return request(`/api/persons/${id}`, { method: "DELETE", token }); }
+
+// CSV import (Gemini). `parse` is multipart, so it bypasses the JSON `request` helper.
+export async function parseCsvImport(token: string, file: File): Promise<ParsePreview> {
+  const form = new FormData();
+  form.append("file", file);
+  const res = await fetch(`${BASE_URL}/api/import/parse`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: form });
+  let data: any;
+  try { data = await res.json(); } catch { data = {}; }
+  if (!res.ok) {
+    const raw = data?.detail;
+    const detail: string = Array.isArray(raw) ? raw.map((e: { msg: string }) => e.msg).join(", ") : typeof raw === "string" ? raw : "";
+    throw new Error(detail || `Request failed (${res.status})`);
+  }
+  return data as ParsePreview;
+}
+export async function commitCsvImport(token: string, payload: { source: string; person_name: string; transactions: ParsedTransaction[] }): Promise<ImportResult> {
+  return request("/api/import/commit", { method: "POST", body: payload, token });
+}

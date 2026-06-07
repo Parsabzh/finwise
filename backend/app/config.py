@@ -17,6 +17,12 @@ class Settings(BaseSettings):
     ollama_model: str = "llama3.1:8b"
     ollama_timeout: int = 30
 
+    # Google Gemini — used for the CSV bank-statement import.
+    # Get a key at https://aistudio.google.com/apikey and set GEMINI_API_KEY.
+    gemini_api_key: str = ""
+    gemini_model: str = "gemini-flash-lite-latest"
+    gemini_timeout: int = 60
+
     # SMTP/email settings (leave empty to log reset links in dev)
     smtp_host: str = ""
     smtp_port: int = 587
