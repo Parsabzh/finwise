@@ -3,7 +3,7 @@ import re
 from datetime import date
 from decimal import Decimal, InvalidOperation
 
-from app.ai.gemini_client import gemini_generate_json
+from app.ai.gemini_client import gemini_generate_json, GeminiError
 from app.ai.categories import CATEGORY_HINTS
 
 # Cap how much of the file we hand to the model in one request.
@@ -78,11 +78,11 @@ def extract_transactions(csv_text: str, categories: list[str]) -> list[dict]:
     Send raw CSV to Gemini and return a list of normalized transaction dicts.
     Raises ImportError if Gemini is unavailable or returns nothing usable.
     """
-    raw = gemini_generate_json(_build_prompt(csv_text, categories))
-    if raw is None:
-        raise ImportError(
-            "Gemini is not configured or unreachable. Set GEMINI_API_KEY."
-        )
+    try:
+        raw = gemini_generate_json(_build_prompt(csv_text, categories))
+    except GeminiError as exc:
+        # Forward Gemini's specific, user-friendly reason (quota, busy, key, …).
+        raise ImportError(exc.user_message)
 
     try:
         parsed = json.loads(raw)

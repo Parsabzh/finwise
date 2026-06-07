@@ -5,6 +5,23 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8002";
 
 interface RequestOptions { method?: string; body?: unknown; token?: string; }
 
+// The backend returns errors as { error: { code, message, details? } }.
+// (Some raw FastAPI errors use { detail }.) Pull out a human-readable message
+// from whichever shape we got, falling back to a generic line.
+function extractError(data: any, status: number, fallback = `Request failed (${status})`): string {
+  const err = data?.error;
+  if (err?.message) {
+    const details = Array.isArray(err.details)
+      ? err.details.map((d: { message?: string; msg?: string }) => d.message || d.msg).filter(Boolean).join(", ")
+      : "";
+    return details ? `${err.message}: ${details}` : err.message;
+  }
+  const raw = data?.detail;
+  if (Array.isArray(raw)) return raw.map((e: { msg: string }) => e.msg).join(", ");
+  if (typeof raw === "string") return raw;
+  return fallback;
+}
+
 async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
   const { method = "GET", body, token } = opts;
   const headers: Record<string, string> = { "Content-Type": "application/json" };
@@ -14,11 +31,7 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
   let data: any; // intentional: res.json() shape is unknown at compile time
   try { data = await res.json(); } catch { data = {}; }
   if (!res.ok) {
-    const raw = data?.detail;
-    const detail: string = Array.isArray(raw)
-      ? raw.map((e: { msg: string }) => e.msg).join(", ")
-      : typeof raw === "string" ? raw : "";
-    throw new Error(detail || `Request failed (${res.status})`);
+    throw new Error(extractError(data, res.status));
   }
   return data as T;
 }
@@ -29,10 +42,7 @@ export async function login(email: string, password: string): Promise<TokenRespo
   const res = await fetch(`${BASE_URL}/api/auth/login`, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}` });
   const data = await res.json();
   if (!res.ok) {
-    const detail = Array.isArray(data.detail)
-      ? data.detail.map((e: { msg: string }) => e.msg).join(", ")
-      : data.detail;
-    throw new Error(detail || "Login failed");
+    throw new Error(extractError(data, res.status, "Login failed"));
   }
   return data as TokenResponse;
 }
@@ -102,9 +112,7 @@ export async function parseCsvImport(token: string, file: File): Promise<ParsePr
   let data: any;
   try { data = await res.json(); } catch { data = {}; }
   if (!res.ok) {
-    const raw = data?.detail;
-    const detail: string = Array.isArray(raw) ? raw.map((e: { msg: string }) => e.msg).join(", ") : typeof raw === "string" ? raw : "";
-    throw new Error(detail || `Request failed (${res.status})`);
+    throw new Error(extractError(data, res.status));
   }
   return data as ParsePreview;
 }
