@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     # Get a key at https://aistudio.google.com/apikey and set GEMINI_API_KEY.
     gemini_api_key: str = ""
     gemini_model: str = "gemini-flash-lite-latest"
-    gemini_timeout: int = 60
+    gemini_timeout: int = 120
 
     # SMTP/email settings (leave empty to log reset links in dev)
     smtp_host: str = ""
