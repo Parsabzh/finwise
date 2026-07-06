@@ -1,3 +1,4 @@
+import base64
 import time
 
 import requests
@@ -43,10 +44,12 @@ def gemini_available() -> bool:
     return bool(settings.gemini_api_key)
 
 
-def gemini_generate_json(prompt: str) -> str:
+def _post_generate_content(parts: list[dict]) -> str:
     """
-    Call Gemini generateContent and return the raw model text (JSON string).
+    Shared request/retry logic for a generateContent call.
 
+    `parts` is the list of Gemini "part" objects (text, inline_data, ...)
+    making up the single user turn. Returns the raw model text.
     Raises GeminiError (with a user-friendly message) on any failure.
     """
     if not settings.gemini_api_key:
@@ -54,7 +57,7 @@ def gemini_generate_json(prompt: str) -> str:
 
     url = f"{BASE_URL}/models/{settings.gemini_model}:generateContent"
     payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
+        "contents": [{"parts": parts}],
         "generationConfig": {"responseMimeType": "application/json", "temperature": 0},
     }
     headers = {
@@ -84,10 +87,32 @@ def gemini_generate_json(prompt: str) -> str:
 
         data = resp.json()
         candidates = data.get("candidates", [])
-        parts = candidates[0].get("content", {}).get("parts", []) if candidates else []
-        if not parts:
+        parts_out = candidates[0].get("content", {}).get("parts", []) if candidates else []
+        if not parts_out:
             raise GeminiError("The AI service returned an empty response. Please try again.")
-        return parts[0].get("text", "").strip()
+        return parts_out[0].get("text", "").strip()
 
     # Exhausted retries on a retryable status.
     raise GeminiError(_message_for_status(resp.status_code), resp.status_code)
+
+
+def gemini_generate_json(prompt: str) -> str:
+    """
+    Call Gemini generateContent with a plain text prompt and return the raw
+    model text (JSON string). Raises GeminiError on failure.
+    """
+    return _post_generate_content([{"text": prompt}])
+
+
+def gemini_generate_json_with_document(prompt: str, document_bytes: bytes, mime_type: str) -> str:
+    """
+    Call Gemini generateContent with a text prompt plus an inline document
+    (e.g. a PDF) and return the raw model text (JSON string). Gemini reads
+    the document's layout/tables natively. Raises GeminiError on failure.
+    """
+    encoded = base64.b64encode(document_bytes).decode("ascii")
+    parts = [
+        {"text": prompt},
+        {"inline_data": {"mime_type": mime_type, "data": encoded}},
+    ]
+    return _post_generate_content(parts)
