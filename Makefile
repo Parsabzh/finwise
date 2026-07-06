@@ -1,6 +1,6 @@
 SUPABASE_URL := postgresql://postgres.dmsjszlaipwppyfbdteg:ZZdyPPQbNRtnQ3Pg@aws-1-eu-west-2.pooler.supabase.com:5432/postgres
 
-.PHONY: backend frontend dev db db-stop seed install kill migrate-prod revision-prod
+.PHONY: backend frontend dev db db-stop seed install kill migrate-prod revision-prod deploy deploy-backend deploy-frontend
 
 # Start only the database
 db:
@@ -50,3 +50,19 @@ revision-prod:
 # Stop and remove all containers
 kill:
 	sudo docker compose down
+
+# --- Deploy ---
+# One-time setup per machine: `vercel login`, then `cd backend && vercel link`
+# and `cd frontend && vercel link` so the CLI knows which Vercel project each
+# directory maps to (they're deployed as two separate Vercel projects).
+
+# Deploy backend to Vercel (prod)
+deploy-backend:
+	cd backend && npx vercel --prod
+
+# Deploy frontend to Vercel (prod)
+deploy-frontend:
+	cd frontend && npx vercel --prod
+
+# Apply pending Supabase migrations, then deploy backend and frontend to Vercel
+deploy: migrate-prod deploy-backend deploy-frontend
