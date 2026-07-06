@@ -68,7 +68,10 @@ async def parse_statement(
             rows = extract_transactions_from_document(raw, "application/pdf", categories)
         else:
             if extension == ".xlsx":
-                text = xlsx_to_text(raw)
+                try:
+                    text = xlsx_to_text(raw)
+                except StatementImportError as exc:
+                    raise HTTPException(status_code=400, detail=str(exc))
             else:
                 try:
                     text = raw.decode("utf-8-sig")

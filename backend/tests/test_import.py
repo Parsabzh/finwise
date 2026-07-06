@@ -87,6 +87,19 @@ class TestXlsxDispatch:
         assert captured["text"] == "flattened,excel,text"
         assert resp.json()["count"] == 1
 
+    def test_corrupt_xlsx_returns_400_not_502(self, client, auth_headers, monkeypatch):
+        def fake_xlsx_to_text(raw):
+            raise route.StatementImportError(
+                "Could not read this Excel file. Make sure it's a valid .xlsx export."
+            )
+
+        monkeypatch.setattr(route, "xlsx_to_text", fake_xlsx_to_text)
+
+        resp = _upload(client, auth_headers, "statement.xlsx", b"not really an xlsx")
+
+        assert resp.status_code == 400
+        assert "valid .xlsx export" in resp.json()["error"]["message"]
+
 
 class TestPdfDispatch:
     def test_parses_pdf_via_document_path(self, client, auth_headers, monkeypatch):
