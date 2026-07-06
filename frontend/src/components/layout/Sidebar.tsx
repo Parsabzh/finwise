@@ -8,7 +8,7 @@ export type PageId = "dashboard" | "transactions" | "budgets" | "goals" | "recur
 const NAV_ITEMS: { id: PageId; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "transactions", label: "Transactions", icon: ArrowUpDown },
-  { id: "import", label: "Import CSV", icon: FileUp },
+  { id: "import", label: "Import Statement", icon: FileUp },
   { id: "budgets", label: "Budgets", icon: Wallet },
   { id: "goals", label: "Savings Goals", icon: Target },
   { id: "recurring", label: "Recurring", icon: Repeat },

@@ -65,8 +65,8 @@ export function ImportPage() {
     <div>
       <div className={s.header}>
         <div>
-          <h1 className={s.title}>Import CSV</h1>
-          <p className={s.subtitle}>Upload a bank statement — Gemini extracts &amp; categorizes each transaction</p>
+          <h1 className={s.title}>Import Statement</h1>
+          <p className={s.subtitle}>Upload a CSV, Excel, or PDF bank statement — Gemini extracts &amp; categorizes each transaction</p>
         </div>
       </div>
 
@@ -77,10 +77,10 @@ export function ImportPage() {
         </div>
 
         <div className={s.dropzone} onClick={() => fileRef.current?.click()}>
-          <input ref={fileRef} type="file" accept=".csv,text/csv" hidden
+          <input ref={fileRef} type="file" accept=".csv,.xlsx,.pdf,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf" hidden
             onChange={e => { setFile(e.target.files?.[0] ?? null); setRows(null); setDone(null); }} />
           <FileUp size={22} />
-          <span className={s.dropText}>{file ? file.name : "Click to choose a CSV file"}</span>
+          <span className={s.dropText}>{file ? file.name : "Click to choose a CSV, Excel, or PDF file"}</span>
         </div>
 
         <div className={s.actions}>
