@@ -1,4 +1,5 @@
 from io import BytesIO
+from xml.etree.ElementTree import ParseError
 from zipfile import BadZipFile
 
 from openpyxl import load_workbook
@@ -16,7 +17,7 @@ def xlsx_to_text(raw: bytes) -> str:
     """
     try:
         workbook = load_workbook(BytesIO(raw), read_only=True, data_only=True)
-    except (BadZipFile, InvalidFileException, KeyError) as exc:
+    except (BadZipFile, InvalidFileException, KeyError, ParseError) as exc:
         raise ImportError(
             "Could not read this Excel file. Make sure it's a valid .xlsx export."
         ) from exc

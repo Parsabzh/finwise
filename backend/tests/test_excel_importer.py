@@ -5,6 +5,7 @@
 # that statement_importer's text prompt expects.
 
 from io import BytesIO
+from zipfile import ZipFile
 
 import pytest
 from openpyxl import Workbook
@@ -62,3 +63,35 @@ class TestXlsxToText:
     def test_corrupt_bytes_raise_import_error(self):
         with pytest.raises(StatementImportError):
             xlsx_to_text(b"this is not a real xlsx file")
+
+    def test_malformed_xml_inside_valid_zip_raises_import_error(self):
+        """
+        Test that a valid ZIP container with malformed/truncated internal XML
+        (a realistic corruption case) raises ImportError instead of ParseError.
+        """
+        # Create a valid .xlsx first
+        wb = Workbook()
+        ws = wb.active
+        ws['A1'] = "Test"
+        ws['B1'] = "Data"
+        ws.append([1, 2])
+        buf = BytesIO()
+        wb.save(buf)
+        valid_xlsx_bytes = buf.getvalue()
+
+        # Corrupt the internal XML by replacing workbook.xml with malformed XML
+        zip_buffer = BytesIO()
+        with ZipFile(BytesIO(valid_xlsx_bytes), 'r') as orig_zip:
+            with ZipFile(zip_buffer, 'w') as new_zip:
+                for item in orig_zip.infolist():
+                    data = orig_zip.read(item.filename)
+                    if item.filename == 'xl/workbook.xml':
+                        # Truncate with malformed XML that will trigger ParseError in openpyxl
+                        data = b"<Workbook><incomplete xml"
+                    new_zip.writestr(item, data)
+
+        corrupted_xlsx_bytes = zip_buffer.getvalue()
+
+        # Should raise ImportError, not ParseError
+        with pytest.raises(StatementImportError):
+            xlsx_to_text(corrupted_xlsx_bytes)
