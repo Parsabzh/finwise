@@ -12,7 +12,7 @@ from app.routes.auth import router as auth_router
 from app.routes.person import router as persons_router
 from app.routes.ai import router as ai_router
 from app.routes.users import router as users_router
-from app.routes.import_csv import router as import_router
+from app.routes.import_statement import router as import_router
 
 from app.exceptions import FinWiseException
 from app.error_handlers import (

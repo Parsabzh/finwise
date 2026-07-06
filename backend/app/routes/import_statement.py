@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
@@ -7,19 +9,30 @@ from app.models.user import User
 from app.models.person import Person
 from app.models.transaction import Transaction
 from app.ai.category_resolver import resolve_categories
-from app.ai.csv_importer import extract_transactions, ImportError as CsvImportError
+from app.ai.excel_importer import xlsx_to_text
+from app.ai.statement_importer import (
+    extract_transactions_from_text,
+    extract_transactions_from_document,
+    ImportError as StatementImportError,
+)
 from app.ai.gemini_client import gemini_available
 from app.config import settings
 from app.schemas.import_csv import ParsePreview, ImportCommit, ImportResult
 
 router = APIRouter(prefix="/api/import", tags=["Import"])
 
-MAX_FILE_BYTES = 2 * 1024 * 1024  # 2 MB is plenty for a bank CSV
+# Per-format upload caps. PDF/Excel statements can legitimately be larger
+# than a plain CSV (multi-page, formatting), so they get more headroom.
+MAX_FILE_BYTES: dict[str, int] = {
+    ".csv": 2 * 1024 * 1024,
+    ".xlsx": 5 * 1024 * 1024,
+    ".pdf": 5 * 1024 * 1024,
+}
 
 
 @router.get("/health")
 def import_health() -> dict:
-    """Is Gemini configured for the CSV import feature?"""
+    """Is Gemini configured for the statement import feature?"""
     return {
         "status": "ok" if gemini_available() else "no_api_key",
         "model": settings.gemini_model,
@@ -27,31 +40,46 @@ def import_health() -> dict:
 
 
 @router.post("/parse", response_model=ParsePreview)
-async def parse_csv(
+async def parse_statement(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ParsePreview:
-    """Upload a bank CSV, let Gemini extract + classify rows, return a preview.
+    """Upload a bank statement (CSV, Excel, or PDF); Gemini extracts + classifies rows.
 
     Nothing is written to the database here — the user reviews first.
     """
+    extension = Path(file.filename or "").suffix.lower()
+    if extension not in MAX_FILE_BYTES:
+        raise HTTPException(
+            status_code=400,
+            detail="Unsupported file type. Please upload a CSV, Excel (.xlsx), or PDF file.",
+        )
+
     raw = await file.read()
-    if len(raw) > MAX_FILE_BYTES:
-        raise HTTPException(status_code=413, detail="File too large (max 2 MB).")
-
-    try:
-        text = raw.decode("utf-8-sig")
-    except UnicodeDecodeError:
-        text = raw.decode("latin-1", errors="replace")
-
-    if not text.strip():
-        raise HTTPException(status_code=400, detail="The uploaded file is empty.")
+    if len(raw) > MAX_FILE_BYTES[extension]:
+        limit_mb = MAX_FILE_BYTES[extension] // (1024 * 1024)
+        raise HTTPException(status_code=413, detail=f"File too large (max {limit_mb} MB).")
 
     categories = resolve_categories(current_user.id, db)
+
     try:
-        rows = extract_transactions(text, categories)
-    except CsvImportError as exc:
+        if extension == ".pdf":
+            rows = extract_transactions_from_document(raw, "application/pdf", categories)
+        else:
+            if extension == ".xlsx":
+                text = xlsx_to_text(raw)
+            else:
+                try:
+                    text = raw.decode("utf-8-sig")
+                except UnicodeDecodeError:
+                    text = raw.decode("latin-1", errors="replace")
+
+            if not text.strip():
+                raise HTTPException(status_code=400, detail="The uploaded file is empty.")
+
+            rows = extract_transactions_from_text(text, categories)
+    except StatementImportError as exc:
         raise HTTPException(status_code=502, detail=str(exc))
 
     return ParsePreview(count=len(rows), transactions=rows)
